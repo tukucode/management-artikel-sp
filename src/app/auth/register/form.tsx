@@ -10,6 +10,7 @@ import { FormButtonSubmit } from '@/components/form/button-submit'
 import { FormField } from '@/components/form/field'
 import { Role  } from '@/types/role_type'
 import { FormDataAuth, authSchema } from '@/lib/schemas/authSchema'
+import { ResponseRegister } from '@/types/responses/register_response_type'
 
 export const FormRegister = () => {
   const [isLoding, setLoading] = useState(false)
@@ -24,7 +25,7 @@ export const FormRegister = () => {
   const onSubmit = async (formData: FormDataAuth) => {
     try {
       setLoading(true)
-      await $axios.post('/auth/register', {
+      await $axios.post<ResponseRegister>('/auth/register', {
         ...formData,
         role: Role.User,
       })
