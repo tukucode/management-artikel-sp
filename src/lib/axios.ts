@@ -3,10 +3,9 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from 'axios'
-import { BASE_API_URL } from '@/constants/variables_const'
 
-const $axios = axios.create({
-  baseURL: `${BASE_API_URL}/api`,
+export const $axios = axios.create({
+  baseURL: '/api',
   withCredentials: true,
 })
 
@@ -56,5 +55,3 @@ $axios.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-
-export default $axios
