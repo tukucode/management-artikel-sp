@@ -3,6 +3,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from 'axios'
+import Cookies from 'js-cookie'
 
 export const $axios = axios.create({
   baseURL: '/api',
@@ -11,16 +12,12 @@ export const $axios = axios.create({
 
 $axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // if (typeof window !== 'undefined') {
-    //   const token = document.cookie
-    //     .split('; ')
-    //     .find((row) => row.startsWith('token='))
-    //     ?.split('=')[1]
+    const token = Cookies.get('token')
 
-    //   if (token) {
-    //     config.headers.Authorization = `Bearer ${token}`
-    //   }
-    // }
+    // set token to header Authorization
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
 
     return config
   },
@@ -30,7 +27,15 @@ $axios.interceptors.request.use(
 )
 
 $axios.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => response,
+  (response: AxiosResponse): AxiosResponse => {
+    // set cookie token and role from response
+    if (response.data.data) {
+      Cookies.set('token', response.data.data.token)
+      Cookies.set('role', response.data.data.role)
+    }
+
+    return response
+  },
   (error: AxiosError): Promise<AxiosError> => {
     // if (error.response) {
     //   const status = error.response.status

@@ -8,10 +8,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { $axios } from '@/lib/axios'
 import { FormButtonSubmit } from '@/components/form/button-submit'
 import { FormField } from '@/components/form/field'
-import { Role  } from '@/types/role_type'
 import { FormDataAuth, authSchema } from '@/lib/schemas/authSchema'
+import { ResponseLogin } from '@/types/responses/login_response_type'
 
-export const FormRegister = () => {
+export const FormLogin = () => {
   const [isLoding, setLoading] = useState(false)
   const {
     register,
@@ -24,12 +24,8 @@ export const FormRegister = () => {
   const onSubmit = async (formData: FormDataAuth) => {
     try {
       setLoading(true)
-      await $axios.post('/auth/register', {
-        ...formData,
-        role: Role.User,
-      })
-
-      redirect('/auth/login')
+      await $axios.post<ResponseLogin>('/auth/login', formData)
+      redirect('/article')
     } finally {
       setLoading(false)
     }
@@ -59,10 +55,10 @@ export const FormRegister = () => {
         </div>
 
         <div className="grid gap-4 text-center">
-          <FormButtonSubmit isLoading={isLoding} label='Register' />
+          <FormButtonSubmit isLoading={isLoding} label='Login' />
           <p>
-            Alredy have an account? {' '}
-            <Link href="/auth/login" className='text-blue-500'>
+            Don&apos;t have an account? Please {' '}
+            <Link href="/auth/register" className='text-blue-500'>
               Login
             </Link>
             .

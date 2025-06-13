@@ -7,7 +7,13 @@ export type FormDataAuth = {
   role?: Role
 }
 
-export const registerSchema = z.object({
-  username: z.string().min(3, { message: 'Username minimal 3 karakter'}),
-  password: z.string().min(1, { message: 'Password minimal 1 karakter' }),
+export const authSchema = z.object({
+  username: z
+    .string()
+    .min(3, { message: 'Username must be at least 3 characters' })
+    .max(20, { message: 'Username must be at most 20 characters' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(12, { message: 'Password must be at most 12 characters' }),
 })

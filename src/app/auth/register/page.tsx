@@ -5,7 +5,7 @@ import {
   CardDescription, 
   CardContent,
 } from '@/components/ui/card'
-import { RegisterForm } from './form'
+import { FormRegister } from './form'
 
 import type { Metadata } from 'next'
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function Page() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <RegisterForm />
+        <FormRegister />
       </CardContent>
     </Card>
   )

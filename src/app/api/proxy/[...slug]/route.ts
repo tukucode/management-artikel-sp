@@ -35,27 +35,30 @@ async function proxyRequest(req: NextRequest, path: string) {
     }
 
     const data = await response.json()
-
-    // Tangani status error dari API pihak ketiga
+    
     if (!response.ok) {
-      const errorMessage =
-    data?.error || data?.message || 'Oops, something went wrong'
-
+      const errorMessage = data?.error || data?.message 
       return NextResponse.json(
         {
           code: response.status,
-          error: errorMessage,
+          message: errorMessage || 'Oops, something went wrong',
         },
         { status: response.status },
       )
     }
 
-    return NextResponse.json(data, { status: response.status })
+    return NextResponse.json({
+      code: response.status,
+      message: 'success',
+      data,
+    }, 
+    { status: response.status },
+    )
   } catch (error: any) {
     return NextResponse.json(
       {
-        error: 'Internal server error',
-        details: error?.error  || 'Unknown error',
+        code: 500,
+        message: error?.error  ||'Internal server error',
       },
       { status: 500 },
     )
