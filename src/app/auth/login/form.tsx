@@ -57,9 +57,9 @@ export const FormLogin = () => {
         <div className="grid gap-4 text-center">
           <FormButtonSubmit isLoading={isLoding} label='Login' />
           <p>
-            Don&apos;t have an account? Please {' '}
+            Don&apos;t have an account? {' '}
             <Link href="/auth/register" className='text-blue-500'>
-              Login
+              Register
             </Link>
             .
           </p>
