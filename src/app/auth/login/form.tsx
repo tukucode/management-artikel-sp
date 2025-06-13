@@ -25,7 +25,7 @@ export const FormLogin = () => {
     try {
       setLoading(true)
       await $axios.post<ResponseLogin>('/auth/login', formData)
-      redirect('/article')
+      redirect('/landing/article')
     } finally {
       setLoading(false)
     }
