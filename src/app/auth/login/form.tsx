@@ -25,9 +25,8 @@ export const FormLogin = () => {
   const onSubmit = async (formData: LoginFormData) => {
     try {
       setLoading(true)
-      const response = await $axios.post<ResponseLogin>('/auth/login', formData)
-      const location = response.data.data.role.toLocaleLowerCase() == 'admin' ? '/dashboard/article' : '/landing/article'
-      window.location.replace(location)
+      await $axios.post<ResponseLogin>('/auth/login', formData)
+      window.location.replace('/landing/article')
     } finally {
       setLoading(false)
     }
