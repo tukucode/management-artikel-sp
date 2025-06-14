@@ -208,7 +208,7 @@ export function ListData() {
                         }
                       </TableCell>
                       <TableCell className="font-medium">{row.title || '-'}</TableCell>
-                      <TableCell className="font-medium">{row.content || '-'}</TableCell>
+                      <TableCell className="font-medium">{ row.content.length > 50 ? `${row.content.slice(0, 50)}...` : row.content }</TableCell>
                       <TableCell className="font-medium">{row.category.name || '-'}</TableCell>
                       <TableCell className="text-right space-x-4">
                         <Button>
