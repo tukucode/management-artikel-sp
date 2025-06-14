@@ -1,3 +1,7 @@
+'use client'
+
+import clsx from 'clsx'
+import { usePathname } from 'next/navigation'
 import { Newspaper, Boxes } from 'lucide-react'
 import ProfileDropdown from '@/components/profile-dropdown'
 import {
@@ -26,11 +30,12 @@ const items = [
   },
 ]
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {  
+  const pathname = usePathname()
   return (
     <SidebarProvider>
       <Sidebar>
@@ -39,16 +44,19 @@ export default async function RootLayout({
             <SidebarGroup className="relative flex w-full min-w-0 flex-col justify-center p-0 h-16 font-bold text-2xl">Dashboard</SidebarGroup>
             <SidebarContent>
               <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild className='py-6'>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span className='font-semibold'>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {items.map((item) => {
+                  const isActive = pathname.startsWith(item.url)
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild className={clsx('py-6', { 'bg-muted cursor-not-allowed': isActive })}>
+                        <a href={item.url}>
+                          <item.icon />
+                          <span className='font-semibold'>{item.title}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
               </SidebarMenu>
             </SidebarContent>
           </SidebarGroup>
