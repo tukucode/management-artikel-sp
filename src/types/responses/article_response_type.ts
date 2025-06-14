@@ -23,3 +23,5 @@ export type ResponseListArticle = ApiResponse<{
   limit: number
   total: number
 }>
+
+export type ResponseCreateArticle = ApiResponse<Omit<DetailArticle, 'category' | 'user'>>

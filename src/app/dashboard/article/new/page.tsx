@@ -10,11 +10,14 @@ import { FormButtonSubmit } from '@/components/button-submit'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
 import { articleSchema, ArticleFormData } from '@/lib/schemas/articleSchema'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import ImageInputPreview from '@/components/image-input-preview'
+
+import { ResponseRegister } from '@/types/responses/upload_response_type'
+import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
+import { ResponseCreateArticle } from '@/types/responses/article_response_type'
 
 export default function Page() {
   const router = useRouter()
@@ -38,15 +41,28 @@ export default function Page() {
   })
 
   const onSubmit = async (formData: ArticleFormData) => {
-    console.log('FORM', formData)
-    
-    // try {
-    //   setLoading(true)
-    //   await $axios.post<ResponseRegister>('/auth/register', formData)
-    //   redirect('/auth/login')
-    // } finally {
-    //   setLoading(false)
-    // }
+    setLoading(true)
+
+    try {
+      const fd = new FormData()
+      fd.append('image', formData.imageFile)
+
+      const uploadRes = await $axios.post<ResponseRegister>('/upload', fd)
+      const imageUrl = uploadRes.data.data.imageUrl
+
+      await $axios.post<ResponseCreateArticle>('/articles', {
+        title: formData.title,
+        content: formData.content,
+        categoryId: formData.categoryId,
+        imageUrl,
+      })
+
+      router.push('/dashboard/article')
+    } catch (error) {
+      console.error('ERRROR', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const fetchCategories = async () => {  
