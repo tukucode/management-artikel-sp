@@ -1,6 +1,7 @@
 'use client'
 
 import Cookies from 'js-cookie'
+import { redirect } from 'next/navigation'
 import { Newspaper, Boxes, CircleUser, LogOut } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -43,7 +44,7 @@ export default function RootLayout({
 
   const onMenuItem = (action: 'profile' | 'logout') => {
     if (action === 'profile') {
-      window.location.replace('/dashboard/profile/me')
+      redirect('/dashboard/profile/me')
     } else {
       Cookies.remove('token')
       Cookies.remove('role')
