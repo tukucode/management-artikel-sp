@@ -25,3 +25,5 @@ export type ResponseListArticle = ApiResponse<{
 }>
 
 export type ResponseCreateArticle = ApiResponse<Omit<DetailArticle, 'category' | 'user'>>
+export type ResponseDetailArticle = ApiResponse<Omit<DetailArticle, 'user'>>
+export type ResponseEditArticle = ApiResponse<Omit<DetailArticle, 'category' | 'user'>>

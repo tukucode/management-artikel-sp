@@ -1,26 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { $axios } from '@/lib/axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/input'
-import { FormButtonSubmit } from '@/components/button-submit'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { articleSchema, ArticleFormData } from '@/lib/schemas/articleSchema'
-import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { FormButtonSubmit } from '@/components/button-submit'
 import ImageInputPreview from '@/components/image-input-preview'
 
 import { ResponseRegister } from '@/types/responses/upload_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
-import { ResponseCreateArticle } from '@/types/responses/article_response_type'
+import { ResponseDetailArticle, ResponseEditArticle } from '@/types/responses/article_response_type'
 
-export default function Page() {
+export default function Edit() {
   const router = useRouter()
+  const { id } = useParams()
   const [isLoding, setLoading] = useState<boolean>(false)
   const [options, setOptions] = useState<DetailCategory[]>([])
 
@@ -42,21 +45,21 @@ export default function Page() {
 
   const onSubmit = async (formData: ArticleFormData) => {
     setLoading(true)
-
+  
     try {
       const fd = new FormData()
       fd.append('image', formData.imageFile)
-
+  
       const uploadRes = await $axios.post<ResponseRegister>('/upload', fd)
       const imageUrl = uploadRes.data.data.imageUrl
-
-      await $axios.post<ResponseCreateArticle>('/articles', {
+  
+      await $axios.put<ResponseEditArticle>(`/articles/${id}`, {
         title: formData.title,
         content: formData.content,
         categoryId: formData.categoryId,
         imageUrl,
       })
-
+  
       router.push('/dashboard/article')
     } catch (error) {
       console.error('ERRROR', error)
@@ -67,9 +70,22 @@ export default function Page() {
 
   const fetchCategories = async () => {  
     try {
-      setLoading(true)
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
       setOptions(response.data.data.data)
+    } catch (error) {
+      console.error('ERRROR', error)
+    }
+  }
+
+  const fetchDetailArticle = async () => {  
+    try {
+      setLoading(true)
+      const response = await $axios.get<ResponseDetailArticle>(`/articles/${id}`)
+
+      const { title, categoryId, content } = response.data.data
+      form.setValue('title', title)
+      form.setValue('categoryId', categoryId, { shouldTouch: true })
+      form.setValue('content', content)
     } catch (error) {
       console.error('ERRROR', error)
     } finally {
@@ -81,13 +97,18 @@ export default function Page() {
   useEffect(() => {
     fetchCategories()
   }, [])
+
+  // fetch API Detail Article
+  useEffect(() => {
+    fetchDetailArticle()
+  }, [id])
   return (
-    <div id='form__new__article'>
+    <div id='form__edit__article'>
       <Card>
         <CardHeader>
-          <CardTitle>Create New Article</CardTitle>
+          <CardTitle>Edit Article</CardTitle>
         </CardHeader>
-      
+
         <CardContent>
           <Form {...form}>
             <form id='form__article' onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -98,7 +119,7 @@ export default function Page() {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder='React JS' {...field} />
+                      <Input placeholder='Title...' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -151,7 +172,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="imageFile"
@@ -174,7 +195,7 @@ export default function Page() {
                 </Button>
 
                 <div className='col-span-6 sm:col-span-3 md:col-span-2'>
-                  <FormButtonSubmit isLoading={isLoding} label='Create' />
+                  <FormButtonSubmit isLoading={isLoding} label='Update' />
                 </div>
               </div>
             </form>
