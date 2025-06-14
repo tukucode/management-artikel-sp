@@ -21,8 +21,8 @@ export const FormRegister = () => {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: '',
-      role: undefined,
       password: '',
+      role: undefined,
     },
   })
 
@@ -55,6 +55,20 @@ export const FormRegister = () => {
 
         <FormField
           control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="role"
           render={({ field }) => (
             <FormItem>
@@ -70,20 +84,6 @@ export const FormRegister = () => {
                   <SelectItem value={Role.Admin}>Admin</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
