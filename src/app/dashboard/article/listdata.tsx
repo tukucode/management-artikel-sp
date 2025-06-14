@@ -37,10 +37,6 @@ export function ListData() {
   const [data, setData] = useState<DetailArticle[]>([])
   const [options, setOptions] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
-
-  // get userId from store profile
-  const userId = useProfileStore((state) => state.id)
-
   const [params, setParams] =  useState<QueryParamArticle>({
     title: '',
     userId: '',
@@ -63,6 +59,8 @@ export function ListData() {
     }
   }
 
+  // get userId from store profile for filter data
+  const userId = useProfileStore((state) => state.id)
   const fetchArticles = async () => {  
     if (!userId.length) return
     
@@ -77,6 +75,18 @@ export function ListData() {
       })
       setData(response.data.data.data)
       setTotal(response.data.data.total)
+    } catch (error) {
+      console.error('ERRROR', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onDeleteArticle = async (id: string) => {
+    try {
+      setLoading(true)
+      await $axios.delete(`/articles/${id}`)
+      await fetchArticles()
     } catch (error) {
       console.error('ERRROR', error)
     } finally {
@@ -195,13 +205,12 @@ export function ListData() {
                           )
                         }
                       </TableCell>
-                      <TableCell className="font-medium">{row.title}</TableCell>
+                      <TableCell className="font-medium">{row.title || '-'}</TableCell>
                       <TableCell className="text-right space-x-4">
                         <Button variant="secondary">
                           <Link href={`/dashboard/article/edit/${row.id}`}>Edit</Link>
                         </Button>
-                        
-                        <Button variant="destructive">Delete</Button>
+                        <Button variant="destructive" onClick={() => onDeleteArticle(row.id)}>Delete</Button>
                       </TableCell>
                     </TableRow>
                   ))
