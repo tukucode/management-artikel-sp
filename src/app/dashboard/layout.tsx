@@ -56,12 +56,12 @@ export default async function RootLayout({
       </Sidebar>
 
       <div className='w-full'>
-        <header className='sticky top-0 flex justify-between items-center h-16 px-4 py-9 bg-sidebar shadow'>
+        <header className='sticky top-0 z-10 flex justify-between items-center h-16 px-4 py-9 bg-sidebar shadow'>
           <SidebarTrigger />
           <ProfileDropdown />
         </header>
 
-        <main className="p-4 min-h-screen">
+        <main className="p-10 min-h-screen">
           {children}
         </main>
       </div>

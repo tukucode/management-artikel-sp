@@ -20,7 +20,9 @@ async function proxyRequest(req: NextRequest, path: string) {
     fetchOptions.body = await req.text()
   }
 
-  const targetUrl = `${BASE_API_URL}/api/${path}`
+  // ✅ Tambahkan query string dari req.nextUrl
+  const searchParams = req.nextUrl.searchParams.toString()
+  const targetUrl = `${BASE_API_URL}/api/${path}${searchParams ? `?${searchParams}` : ''}`
 
   try {
     const response = await fetch(targetUrl, fetchOptions)
@@ -66,28 +68,24 @@ async function proxyRequest(req: NextRequest, path: string) {
   }
 }
 
-export async function GET(req: NextRequest, context: Promise<{ params: { slug?: string[] } }>) {
-  const { params } = await context
+// ✅ Context tidak perlu Promise. Perbaiki jadi object langsung:
+export async function GET(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
 }
-export async function POST(req: NextRequest, context: Promise<{ params: { slug?: string[] } }>) {
-  const { params } = await context
+export async function POST(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
 }
-export async function PUT(req: NextRequest, context: Promise<{ params: { slug?: string[] } }>) {
-  const { params } = await context
+export async function PUT(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
 }
-export async function PATCH(req: NextRequest, context: Promise<{ params: { slug?: string[] } }>) {
-  const { params } = await context
+export async function PATCH(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
 }
-export async function DELETE(req: NextRequest, context: Promise<{ params: { slug?: string[] } }>) {
-  const { params } = await context
+export async function DELETE(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
 }
