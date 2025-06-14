@@ -47,7 +47,7 @@ export function ListData() {
       setData(response.data.data.data)
       setTotal(response.data.data.total)
     } catch (error) {
-      console.log('ERRROR', error)
+      console.error('ERRROR', error)
     } finally {
       setLoading(false)
     }
