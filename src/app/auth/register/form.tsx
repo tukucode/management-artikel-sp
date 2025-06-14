@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
-import { FormButtonSubmit } from '@/components/form/button-submit'
+import { FormButtonSubmit } from '@/components/button-submit'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
