@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('token')?.value
   const role = request.cookies.get('role')?.value
@@ -25,15 +25,12 @@ export function middleware(request: NextRequest) {
     if (!['admin', 'user'].includes(role.toLocaleLowerCase())) {
       return NextResponse.redirect(new URL('/403', request.url))
     }
-  }
 
-  if (isAuthRoute) {
-    if (role === 'User') {
-      return NextResponse.redirect(new URL('/landing/article', request.url))
-    }
-
-    if (role === 'Admin' ) {
-      return NextResponse.redirect(new URL('/dashboard/article', request.url))
+    if (isAuthRoute) {
+      const redirectPath = ['user'].includes(role.toLocaleLowerCase())
+        ? '/landing/article' 
+        : '/dashboard/article'
+      return NextResponse.redirect(new URL(redirectPath, request.url))
     }
   }
 

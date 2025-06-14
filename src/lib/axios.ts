@@ -1,12 +1,15 @@
+import Cookies from 'js-cookie'
 import axios, {
   AxiosResponse,
   AxiosError,
   InternalAxiosRequestConfig,
 } from 'axios'
-import Cookies from 'js-cookie'
+import { BASE_API_URL } from '@/constants/variables_const'
+
+const isServer = typeof window === 'undefined'
 
 export const $axios = axios.create({
-  baseURL: '/api',
+  baseURL: isServer ? `${BASE_API_URL}/api` : '/api',
   withCredentials: true,
 })
 
@@ -29,8 +32,11 @@ $axios.interceptors.request.use(
 $axios.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => {
     // set cookie token and role from response
-    if (response.data.data) {
+    if (response.data.data.token) {
       Cookies.set('token', response.data.data.token)
+    }
+
+    if (response.data.data.role) {
       Cookies.set('role', response.data.data.role)
     }
 
