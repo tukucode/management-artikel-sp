@@ -150,7 +150,7 @@ export function ListData() {
             </div>
 
             <div className='col-span-12 sm:col-span-2'>
-              <Button 
+              <Button
                 className='w-full'
                 asChild
               >
@@ -168,6 +168,8 @@ export function ListData() {
               <TableRow>
                 <TableHead>Source</TableHead>
                 <TableHead>Title</TableHead>
+                <TableHead>Content</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead className="w-1/6 text-right"></TableHead>
               </TableRow>
             </TableHeader>
@@ -175,7 +177,7 @@ export function ListData() {
               {
                 isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center text-muted-foreground py-10">
+                    <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
                       <div className='flex justify-center'>
                         <Loader2Icon className="animate-spin h-10 w-10" />
                       </div>
@@ -184,7 +186,7 @@ export function ListData() {
                   </TableRow>
                 ) : data.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-10 text-muted-foreground">
+                    <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
                       <div className='flex justify-center'>
                         <Database className="h-10 w-10" />
                       </div>
@@ -206,8 +208,10 @@ export function ListData() {
                         }
                       </TableCell>
                       <TableCell className="font-medium">{row.title || '-'}</TableCell>
+                      <TableCell className="font-medium">{row.content || '-'}</TableCell>
+                      <TableCell className="font-medium">{row.category.name || '-'}</TableCell>
                       <TableCell className="text-right space-x-4">
-                        <Button variant="secondary">
+                        <Button>
                           <Link href={`/dashboard/article/edit/${row.id}`}>Edit</Link>
                         </Button>
                         <Button variant="destructive" onClick={() => onDeleteArticle(row.id)}>Delete</Button>
