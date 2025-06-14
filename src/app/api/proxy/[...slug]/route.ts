@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/proxy/[...slug]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { BASE_API_URL } from '@/constants/variables_const'
@@ -5,10 +6,8 @@ import { BASE_API_URL } from '@/constants/variables_const'
 async function proxyRequest(req: NextRequest, path: string) {
   const method = req.method
   const headers = new Headers(req.headers)
-
-  if (!headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json')
-  }
+  // Opsional: hapus header yang tidak perlu
+  headers.delete('host') 
 
   const fetchOptions: RequestInit = {
     method,
@@ -16,11 +15,17 @@ async function proxyRequest(req: NextRequest, path: string) {
     credentials: 'include',
   }
 
+  // Cek dan handle body
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-    fetchOptions.body = await req.text()
+    const contentType = headers.get('content-type') || ''
+    if (contentType.includes('multipart/form-data')) {
+      fetchOptions.body = req.body;(fetchOptions as any).duplex = 'half'
+    } else {
+      fetchOptions.body = await req.text()
+    }
   }
 
-  // ✅ Tambahkan query string dari req.nextUrl
+  // Query string
   const searchParams = req.nextUrl.searchParams.toString()
   const targetUrl = `${BASE_API_URL}/api/${path}${searchParams ? `?${searchParams}` : ''}`
 
@@ -56,7 +61,6 @@ async function proxyRequest(req: NextRequest, path: string) {
       },
       { status: response.status },
     )
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return NextResponse.json(
       {
@@ -68,7 +72,6 @@ async function proxyRequest(req: NextRequest, path: string) {
   }
 }
 
-// ✅ Context tidak perlu Promise. Perbaiki jadi object langsung:
 export async function GET(req: NextRequest, { params }: { params: { slug?: string[] } }) {
   const path = params.slug?.join('/') || ''
   return proxyRequest(req, path)
