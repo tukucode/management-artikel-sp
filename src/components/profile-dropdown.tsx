@@ -10,9 +10,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { CircleUser, LogOut } from 'lucide-react'
+import { CircleUser, Loader2Icon, LogOut } from 'lucide-react'
+import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
+import { $axios } from '@/lib/axios'
+import { useEffect, useState } from 'react'
 
 export default function ProfileDropdown() {
+  const [isLoading, setLoading] = useState<boolean>(true)
+  const [data, setData] = useState<Partial<DetailProfile>>({})
+
   const onMenuItem = (action: 'profile' | 'logout') => {
     if (action === 'profile') {
       redirect('/dashboard/profile/me')
@@ -23,11 +29,39 @@ export default function ProfileDropdown() {
     }
   }
 
+  function getInitial(username: string): string {
+    return username?.trim().charAt(0).toUpperCase() || 'A'
+  }
+
+  const fetchData = async () => {  
+    try {
+      setLoading(true)
+      const response = await $axios.get<ResponseProfile>('/auth/profile')
+      setData(response.data.data)
+    } catch (error) {
+      console.error('ERRROR', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarFallback>TM</AvatarFallback>
+          <AvatarFallback>
+            {
+              isLoading ? (
+                <Loader2Icon className="animate-spin text-muted-foreground" />
+              )
+                : 
+                getInitial(data.username!)
+            }
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
