@@ -1,8 +1,8 @@
 'use client'
 
 import Cookies from 'js-cookie'
-import { Newspaper, Boxes, LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Newspaper, Boxes, CircleUser, LogOut } from 'lucide-react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   Sidebar,
   SidebarContent,
@@ -13,6 +13,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 // Menu items.
 const items = [
@@ -33,10 +40,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const onClearCookies = () => {
-    Cookies.remove('token')
-    Cookies.remove('role')
-    window.location.replace('/')
+
+  const onMenuItem = (action: 'profile' | 'logout') => {
+    if (action === 'profile') {
+      window.location.replace('/dashboard/profile/me')
+    } else {
+      Cookies.remove('token')
+      Cookies.remove('role')
+      window.location.replace('/')
+    }
   }
 
   return (
@@ -67,9 +79,22 @@ export default function RootLayout({
         <header className='sticky top-0 flex justify-between items-center h-16 px-4 py-9 bg-sidebar shadow'>
           <SidebarTrigger />
 
-          <Button variant="destructive" onClick={onClearCookies}>
-            <LogOut /> Logout
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarFallback>TM</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuItem onClick={() => onMenuItem('profile')}>
+                <CircleUser /> Profile
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onMenuItem('logout')}>
+                <LogOut />  Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
 
         <main className="p-4 min-h-screen">
