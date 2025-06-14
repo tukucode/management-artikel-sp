@@ -55,7 +55,7 @@ export function ListData() {
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
       setOptions(response.data.data.data)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     }
   }
 
@@ -76,7 +76,7 @@ export function ListData() {
       setData(response.data.data.data)
       setTotal(response.data.data.total)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }
@@ -88,7 +88,7 @@ export function ListData() {
       await $axios.delete(`/articles/${id}`)
       await fetchArticles()
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }

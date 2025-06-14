@@ -50,7 +50,7 @@ export default function ProfileDropdown() {
       const { id, username, role } = response.data.data
       setProfile({ id, username, role })
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }

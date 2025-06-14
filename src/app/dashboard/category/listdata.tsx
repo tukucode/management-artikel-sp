@@ -19,9 +19,10 @@ import { ResponseListCategory, DetailCategory } from '@/types/responses/category
 import { $axios } from '@/lib/axios'
 import { Button } from '@/components/ui/button'
 import { Database, Loader2Icon } from 'lucide-react'
+import Link from 'next/link'
 
 interface QueryParams {
-  q: string
+  search: string
   page: number
   limit: number
 }
@@ -31,17 +32,17 @@ export function ListData() {
   const [data, setData] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
   const [params, setParams] =  useState<QueryParams>({
-    q: '',
+    search: '',
     page: 1,
     limit: 10,
   })
 
-  const debouncedSearch = useDebounce(params.q)
+  const debouncedSearch = useDebounce(params.search)
   const handlePageChange = (newPage: number) => {
     setParams((prev) => ({ ...prev, page: newPage }))
   }
 
-  const fetchData = async () => {  
+  const fetchCategories = async () => {  
     try {
       setLoading(true)
       const response = await $axios.get<ResponseListCategory>('/categories', {
@@ -50,30 +51,58 @@ export function ListData() {
       setData(response.data.data.data)
       setTotal(response.data.data.totalData)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
+      setData([])
+      setTotal(0)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onDeleteCategory = async (id: string) => {
+    try {
+      setLoading(true)
+      await $axios.delete(`/categories/${id}`)
+      await fetchCategories()
+    } catch (error) {
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchData()
+    fetchCategories()
   }, [debouncedSearch, params.page, params.limit])
 
   return (
     <div id="list__data__category" className='space-y-6'>
       <Card>
         <CardContent>
-          <Input 
-            placeholder='search...' 
-            value={params.q}
-            onChange={(e) => {
-              setParams((prev) => ({
-                ...prev,
-                q: e.target.value,
-                page: 1,
-              }))
-            }} />
+          <div className='grid grid-cols-12 gap-4'>
+            <div className="col-span-12 sm:col-span-9 md:col-span-8 lg:col-span-10">
+              <Input 
+                placeholder='Search...' 
+                value={params.search}
+                onChange={(e) => {
+                  setParams((prev) => ({
+                    ...prev,
+                    search: e.target.value,
+                    page: 1,
+                  }))
+                }} />
+            </div>
+
+            <div className='col-span-12 sm:col-span-3 md:col-span-4 lg:col-span-2'>
+              <Button
+                className='w-full'
+                asChild
+              >
+                <Link href="/dashboard/category/new">Create New</Link>
+              </Button>
+            </div>
+          </div>
+          
         </CardContent>
       </Card>
 
@@ -111,8 +140,8 @@ export function ListData() {
                     <TableRow key={index}>
                       <TableCell className="font-medium">{row.name}</TableCell>
                       <TableCell className="text-right space-x-4">
-                        <Button variant="secondary">Edit</Button>
-                        <Button variant="destructive">Delete</Button>
+                        <Button>Edit</Button>
+                        <Button variant="destructive" onClick={() => onDeleteCategory(row.id)}>Delete</Button>
                       </TableCell>
                     </TableRow>
                   ))

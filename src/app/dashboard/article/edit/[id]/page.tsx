@@ -62,7 +62,7 @@ export default function Edit() {
   
       router.push('/dashboard/article')
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }
@@ -73,7 +73,7 @@ export default function Edit() {
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
       setOptions(response.data.data.data)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     }
   }
 
@@ -87,7 +87,7 @@ export default function Edit() {
       form.setValue('categoryId', categoryId, { shouldTouch: true })
       form.setValue('content', content)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }

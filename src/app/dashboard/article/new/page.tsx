@@ -59,7 +59,7 @@ export default function Page() {
 
       router.push('/dashboard/article')
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }
@@ -71,7 +71,7 @@ export default function Page() {
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
       setOptions(response.data.data.data)
     } catch (error) {
-      console.error('ERRROR', error)
+      console.error('ERROR', error)
     } finally {
       setLoading(false)
     }
