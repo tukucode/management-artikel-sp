@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ListData } from './listdata'
 
 export const metadata: Metadata = {
   title: 'Dashboard - Article',
@@ -6,8 +7,6 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div>
-      <h1>Article</h1>
-    </div>
+    <ListData />
   )
 }
