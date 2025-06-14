@@ -24,6 +24,14 @@ import { ResponseListArticle, DetailArticle } from '@/types/responses/article_re
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
 import { useProfileStore } from '@/store/profile-store'
 
+interface QueryParamArticle {
+  title: string
+  userId: string
+  category: string
+  page: number
+  limit: number
+}
+
 export function ListData() {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<DetailArticle[]>([])
@@ -33,7 +41,7 @@ export function ListData() {
   // get userId from store profile
   const userId = useProfileStore((state) => state.id)
 
-  const [params, setParams] =  useState({
+  const [params, setParams] =  useState<QueryParamArticle>({
     title: '',
     userId: '',
     category: 'all',
