@@ -1,7 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import Cookies from 'js-cookie'
+import { $axios } from '@/lib/axios'
 import { redirect } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +15,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { CircleUser, Loader2Icon, LogOut } from 'lucide-react'
 import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
-import { $axios } from '@/lib/axios'
-import { useEffect, useState } from 'react'
+import { useProfileStore } from '@/store/profile-store'
 
 export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -33,11 +35,16 @@ export default function ProfileDropdown() {
     return username?.trim().charAt(0).toUpperCase() || 'A'
   }
 
+  const setProfile = useProfileStore((state) => state.setProfile)
   const fetchData = async () => {  
     try {
       setLoading(true)
       const response = await $axios.get<ResponseProfile>('/auth/profile')
       setData(response.data.data)
+
+      // set data profile on store Profile
+      const { id, username, role } = response.data.data
+      setProfile({ id, username, role })
     } catch (error) {
       console.error('ERRROR', error)
     } finally {
@@ -47,7 +54,7 @@ export default function ProfileDropdown() {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [setProfile])
   
   return (
     <DropdownMenu>

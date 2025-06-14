@@ -22,14 +22,20 @@ import { Database, FileImage, Loader2Icon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
+import { useProfileStore } from '@/store/profile-store'
 
 export function ListData() {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<DetailArticle[]>([])
   const [options, setOptions] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
+
+  // get userId from store profile
+  const userId = useProfileStore((state) => state.id)
+
   const [params, setParams] =  useState({
     title: '',
+    userId: '',
     category: 'all',
     page: 1,
     limit: 10,
@@ -50,11 +56,14 @@ export function ListData() {
   }
 
   const fetchArticles = async () => {  
+    if (!userId.length) return
+    
     try {
       setLoading(true)
       const response = await $axios.get<ResponseListArticle>('/articles', {
         params: {
           ...params,
+          userId,
           category: params.category == 'all' ? '' : params.category,
         },
       })
@@ -75,8 +84,8 @@ export function ListData() {
   // fetch API list aticles
   useEffect(() => {
     fetchArticles()
-  }, [debouncedSearch, params.category, params.page, params.limit])
-
+  }, [debouncedSearch, userId, params.category, params.page, params.limit])
+  
   return (
     <div id="list__data__category" className='space-y-6'>
       <Card>
