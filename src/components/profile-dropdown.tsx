@@ -21,12 +21,16 @@ export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<Partial<DetailProfile>>({})
 
+  const clearProfile = useProfileStore((state) => state.clearProfile)
   const onMenuItem = (action: 'profile' | 'logout') => {
     if (action === 'profile') {
-      redirect('/dashboard/profile/me')
+      redirect('/profile/me')
     } else {
+      // clear cookie
       Cookies.remove('token')
       Cookies.remove('role')
+      // clear data on profile store
+      clearProfile()
       window.location.replace('/')
     }
   }
