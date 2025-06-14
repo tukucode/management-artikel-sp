@@ -2,6 +2,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import {
   Table,
@@ -12,23 +13,24 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DynamicPagination } from '@/components/dynamic-pagination'
-
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/use-debounce'
 import { $axios } from '@/lib/axios'
 import { Button } from '@/components/ui/button'
-import { Database, Loader2Icon } from 'lucide-react'
+import { Database, FileImage, Loader2Icon } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
-
+import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
 
 export function ListData() {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<DetailArticle[]>([])
+  const [options, setOptions] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
   const [params, setParams] =  useState({
     title: '',
-    category: '',
+    category: 'all',
     page: 1,
     limit: 10,
   })
@@ -38,11 +40,23 @@ export function ListData() {
     setParams((prev) => ({ ...prev, page: newPage }))
   }
 
-  const fetchData = async () => {  
+  const fetchCategories = async () => {  
+    try {
+      const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
+      setOptions(response.data.data.data)
+    } catch (error) {
+      console.error('ERRROR', error)
+    }
+  }
+
+  const fetchArticles = async () => {  
     try {
       setLoading(true)
       const response = await $axios.get<ResponseListArticle>('/articles', {
-        params,
+        params: {
+          ...params,
+          category: params.category == 'all' ? '' : params.category,
+        },
       })
       setData(response.data.data.data)
       setTotal(response.data.data.total)
@@ -53,24 +67,70 @@ export function ListData() {
     }
   }
 
+  // fetch API List categories
   useEffect(() => {
-    fetchData()
-  }, [debouncedSearch, params.page, params.limit])
+    fetchCategories()
+  }, [])
+
+  // fetch API list aticles
+  useEffect(() => {
+    fetchArticles()
+  }, [debouncedSearch, params.category, params.page, params.limit])
 
   return (
     <div id="list__data__category" className='space-y-6'>
       <Card>
         <CardContent>
-          <Input 
-            placeholder='search...' 
-            value={params.title}
-            onChange={(e) => {
-              setParams((prev) => ({
-                ...prev,
-                title: e.target.value,
-                page: 1,
-              }))
-            }} />
+          <div className='grid grid-cols-12 gap-4'>
+            <div className="col-span-12 sm:col-span-3">
+              <Select 
+                value={params.category}
+                onValueChange={(value) => setParams((prev) => ({
+                  ...prev,
+                  category: value,
+                  page: 1,
+                }))}
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder="Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Category</SelectItem>
+                  {
+                    options && options.map((option, i) => {
+                      if (option.id.length) {
+                        return (
+                          <SelectItem key={i} value={option.id}>{option.name}</SelectItem>
+                        )
+                      }
+                    })
+                  }
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="col-span-12 sm:col-span-7">
+              <Input 
+                placeholder='Search...' 
+                value={params.title}
+                onChange={(e) => {
+                  setParams((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                    page: 1,
+                  }))
+                }} />
+            </div>
+
+            <div className='col-span-12 sm:col-span-2'>
+              <Button 
+                className='w-full'
+                asChild
+              >
+                <Link href="/dashboard/article/new">Create New</Link>
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -108,11 +168,22 @@ export function ListData() {
                   data.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        <Image src={row.imageUrl} alt={`image-${index}`} width={100} height={100} className='rounded-lg' />
+                        {
+                          row.imageUrl ? (
+                            <Image src={row.imageUrl} alt={`image-${index}`} width="96" height="64" className='rounded-lg bg-contain bg-center' />
+                          ) : (
+                            <div className='w-24 h-16 bg-muted-foreground flex items-center justify-center rounded-lg'>
+                              <FileImage />
+                            </div>
+                          )
+                        }
                       </TableCell>
                       <TableCell className="font-medium">{row.title}</TableCell>
                       <TableCell className="text-right space-x-4">
-                        <Button variant="secondary">Edit</Button>
+                        <Button variant="secondary">
+                          <Link href={`/dashboard/article/edit/${row.id}`}>Edit</Link>
+                        </Button>
+                        
                         <Button variant="destructive">Delete</Button>
                       </TableCell>
                     </TableRow>
