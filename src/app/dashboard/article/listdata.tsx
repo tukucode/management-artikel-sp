@@ -103,7 +103,7 @@ export function ListData() {
   }, [debouncedSearch, params.userId, params.category, params.page, params.limit])
   
   return (
-    <div id="list__data__category" className='space-y-6'>
+    <div id="list__data__aticles" className='space-y-6'>
       <Card>
         <CardContent>
           <div className='grid grid-cols-12 gap-4'>
