@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { CircleUser, Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
+import { Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
 
@@ -98,15 +98,15 @@ export default function ProfileDropdown() {
         <DropdownMenuSeparator />
         {
           showMenutItemDashboard && (
-            <DropdownMenuItem onClick={() => onMenuItem('dashboard')}>
-              <LayoutDashboard /> Dashboard
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuLabel>Management</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => onMenuItem('dashboard')}>
+                <LayoutDashboard /> Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
           )
         }
-        <DropdownMenuItem onClick={() => onMenuItem('profile')}>
-          <CircleUser /> Profile
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => onMenuItem('logout')}>
           <LogOut />  Logout
         </DropdownMenuItem>
