@@ -17,19 +17,12 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/403', request.url))
     }
 
-    // if (['admin'].includes(role.toLocaleLowerCase()) && isLandingRoute) {
-    //   return NextResponse.redirect(new URL('/403', request.url))
-    // }
-
     if (!['admin', 'user'].includes(role.toLocaleLowerCase())) {
       return NextResponse.redirect(new URL('/403', request.url))
     }
 
     if (isAuthRoute) {
-      const redirectPath = ['user'].includes(role.toLocaleLowerCase())
-        ? '/landing/article' 
-        : '/dashboard/article'
-      return NextResponse.redirect(new URL(redirectPath, request.url))
+      return NextResponse.redirect(new URL('/', request.url))
     }
   }
 

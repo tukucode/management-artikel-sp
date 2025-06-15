@@ -29,7 +29,7 @@ export const FormLogin = () => {
     try {
       setLoading(true)
       await $axios.post<ResponseLogin>('/auth/login', formData)
-      router.push('/article')
+      router.push('/articles')
     } finally {
       setLoading(false)
     }
