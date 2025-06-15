@@ -40,7 +40,7 @@ export function ListData() {
   const [params, setParams] =  useState<QueryParamArticle>({
     title: '',
     userId: '',
-    category: 'all',
+    category: '',
     page: 1,
     limit: 10,
   })
@@ -61,15 +61,13 @@ export function ListData() {
 
   // get userId from store profile for filter data
   const userId = useProfileStore((state) => state.id)
-  const fetchArticles = async () => {  
-    // if (!userId.length) return
-    
+  const fetchArticles = async () => {      
     try {
       setLoading(true)
       const response = await $axios.get<ResponseListArticle>('/articles', {
         params: {
           ...params,
-          userId,
+          userId: params.userId == 'personal' ? userId : '',
           category: params.category == 'all' ? '' : params.category,
         },
       })
@@ -102,14 +100,14 @@ export function ListData() {
   // fetch API list aticles
   useEffect(() => {
     fetchArticles()
-  }, [debouncedSearch, params.category, params.page, params.limit])
+  }, [debouncedSearch, params.userId, params.category, params.page, params.limit])
   
   return (
     <div id="list__data__category" className='space-y-6'>
       <Card>
         <CardContent>
           <div className='grid grid-cols-12 gap-4'>
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 md:col-span-6">
               <Input 
                 placeholder='Search...' 
                 value={params.title}
@@ -122,8 +120,14 @@ export function ListData() {
                 }} />
             </div>
 
-            <div className="col-span-12 sm:col-span-2">
-              <Select 
+            <div className="col-span-12 md:col-span-2">
+              <Select
+                value={params.userId}
+                onValueChange={(value) => setParams((prev) => ({
+                  ...prev,
+                  userId: value,
+                  page: 1,
+                }))}
               >
                 <SelectTrigger className='w-full'>
                   <SelectValue placeholder="Filter by" />
@@ -135,7 +139,7 @@ export function ListData() {
               </Select>
             </div>
 
-            <div className="col-span-12 sm:col-span-2">
+            <div className="col-span-12 md:col-span-2">
               <Select 
                 value={params.category}
                 onValueChange={(value) => setParams((prev) => ({
@@ -148,7 +152,7 @@ export function ListData() {
                   <SelectValue placeholder="Select by category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* <SelectItem value="all">All Categories</SelectItem> */}
+                  <SelectItem value="all">All Categories</SelectItem>
                   {
                     options && options.map((option, i) => {
                       if (option.id.length) {
@@ -162,9 +166,7 @@ export function ListData() {
               </Select>
             </div>
 
-          
-
-            <div className='col-span-12 sm:col-span-2'>
+            <div className='col-span-12 md:col-span-2'>
               <Button
                 className='w-full'
                 asChild
