@@ -44,7 +44,7 @@ export default function ProfileDropdown() {
       Cookies.remove('role')
       // clear data on profile store
       profileStore.clearProfile()
-      window.location.replace('/')
+      window.location.replace('/auth/login')
     }
   }
 
@@ -52,7 +52,6 @@ export default function ProfileDropdown() {
     return username?.trim().charAt(0).toUpperCase() || 'A'
   }
 
-  const setProfile = useProfileStore((state) => state.setProfile)
   const fetchData = async () => {  
     try {
       setLoading(true)
@@ -61,7 +60,7 @@ export default function ProfileDropdown() {
 
       // set data profile on store Profile
       const { id, username, role } = response.data.data
-      setProfile({ id, username, role })
+      profileStore.setProfile({ id, username, role })
     } catch (error) {
       console.error('ERROR', error)
     } finally {
@@ -71,7 +70,7 @@ export default function ProfileDropdown() {
 
   useEffect(() => {
     fetchData()
-  }, [setProfile])
+  }, [profileStore.setProfile])
   
   return (
     <DropdownMenu>

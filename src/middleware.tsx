@@ -6,10 +6,9 @@ export async function middleware(request: NextRequest) {
   const role = request.cookies.get('role')?.value
 
   const isAuthRoute = pathname.startsWith('/auth')
-  const isLandingRoute = pathname.startsWith('/landing')
   const isDashboardRoute = pathname.startsWith('/dashboard')
 
-  if (!token && (isDashboardRoute || isLandingRoute)) {
+  if (!token && (isDashboardRoute)) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
@@ -38,5 +37,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/auth/:path*', '/dashboard/:path*', '/landing/:path*'],
+  matcher: ['/auth/:path*', '/dashboard/:path*'],
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { $axios } from '@/lib/axios'
@@ -13,6 +14,7 @@ import { loginSchema, LoginFormData } from '@/lib/schemas/authSchema'
 import { ResponseLogin } from '@/types/responses/login_response_type'
 
 export const FormLogin = () => {
+  const router = useRouter()
   const [isLoding, setLoading] = useState(false)
   
   const form = useForm<LoginFormData>({
@@ -27,7 +29,7 @@ export const FormLogin = () => {
     try {
       setLoading(true)
       await $axios.post<ResponseLogin>('/auth/login', formData)
-      window.location.replace('/landing/article')
+      router.push('/article')
     } finally {
       setLoading(false)
     }
