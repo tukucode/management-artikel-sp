@@ -73,7 +73,7 @@ export default function ListArticles() {
     
   return (
     <div id='list__articles'>
-      <Card className='mb-6'>
+      <Card className='mb-4 md:mb-6 sticky top-20'>
         <CardContent>
           <div className='grid grid-cols-12 gap-4'>
             <div className="col-span-8 sm:col-span-10">
@@ -121,7 +121,7 @@ export default function ListArticles() {
 
       {
         isLoading ? 
-          <div className="grid grid-cols-12 gap-4">
+          <div className="grid grid-cols-12 gap-4 md:gap-8">
             {
               Array.from({ length: 11 }).map((_, index) => (
                 <div key={index} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 2xl:col-span-2'>
@@ -151,7 +151,7 @@ export default function ListArticles() {
                 </div>
                 : 
                 <>
-                  <div className="grid grid-cols-12 gap-4 mb-8">
+                  <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
                     {
                       data.map((data, i) => (
                         <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 2xl:col-span-2'>
