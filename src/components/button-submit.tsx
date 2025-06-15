@@ -13,9 +13,16 @@ export const FormButtonSubmit = ({
   block,
 }: PropFormButtonSubmit) => {
   return (
-    <Button disabled={isLoading} type="submit" className={block ? 'w-full' : 'w-fit'}>
-      { isLoading && <Loader2Icon className="animate-spin" /> } 
-      { label }
+    <Button disabled={isLoading} type="submit" className={block ? 'w-full' : ''}>
+      { 
+        isLoading ?
+          <>
+            <Loader2Icon className="animate-spin" /> 
+            Loading...
+          </>
+          :
+          label
+      } 
     </Button>
   )
 }

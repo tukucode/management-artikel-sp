@@ -19,7 +19,7 @@ import { ResponseListCategory, DetailCategory } from '@/types/responses/category
 import { $axios } from '@/lib/axios'
 import { Button } from '@/components/ui/button'
 import { Database, Loader2Icon } from 'lucide-react'
-import Link from 'next/link'
+import { FormNewCategory } from './form-new-category'
 
 interface QueryParams {
   search: string
@@ -94,12 +94,7 @@ export function ListData() {
             </div>
 
             <div className='col-span-12 sm:col-span-3 md:col-span-4 lg:col-span-2'>
-              <Button
-                className='w-full'
-                asChild
-              >
-                <Link href="/dashboard/category/new">Create New</Link>
-              </Button>
+              <FormNewCategory onLoadData={() => fetchCategories()} />
             </div>
           </div>
           
