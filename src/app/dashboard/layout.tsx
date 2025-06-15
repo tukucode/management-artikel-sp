@@ -69,7 +69,7 @@ export default function RootLayout({
           <ProfileDropdown />
         </header>
 
-        <main className="p-10 min-h-screen">
+        <main className="p-10 bg-gray-100 dark:bg-muted-foreground/5 min-h-screen">
           {children}
         </main>
       </div>

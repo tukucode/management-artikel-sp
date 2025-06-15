@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <div id='layout__landing'>
       <header className='sticky top-0 z-10 flex justify-between items-center h-16 px-4 py-8 bg-sidebar shadow'>
-        <Link href="/landing/article">
+        <Link href="/articles">
           <h4 className='font-semibold text-lg'>Artiqo</h4>
         </Link>
   
@@ -49,7 +49,7 @@ export default function RootLayout({
         }
       </header>
 
-      <main className="py-10 px-4 min-h-screen">
+      <main className="py-10 px-4 bg-gray-100 dark:bg-muted-foreground/5 min-h-screen">
         {children}
       </main>
     </div>
