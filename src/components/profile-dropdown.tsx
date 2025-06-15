@@ -53,7 +53,6 @@ export default function ProfileDropdown() {
 
   const fetchData = async () => {  
     try {
-      setLoading(true)
       const response = await $axios.get<ResponseProfile>('/auth/profile')
       setData(response.data.data)
 
@@ -68,10 +67,8 @@ export default function ProfileDropdown() {
   }
 
   useEffect(() => {
-    if (isLoading) {
-      fetchData()
-    }
-  }, [isLoading])
+    fetchData()
+  }, [])
   
   return (
     <DropdownMenu>
