@@ -3,34 +3,47 @@
 
 import Cookies from 'js-cookie'
 import { $axios } from '@/lib/axios'
-import { redirect } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { redirect, usePathname } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { CircleUser, Loader2Icon, LogOut } from 'lucide-react'
-import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
+import { CircleUser, Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
 import { useProfileStore } from '@/store/profile-store'
+import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
 
 export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<Partial<DetailProfile>>({})
+  const profileStore = useProfileStore((state) => state)
+  
+  const pathname = usePathname()
+  const showMenutItemDashboard = useMemo(() => {
+    if (profileStore.role.toLocaleLowerCase() == 'admin') {
+      return !pathname.startsWith('/dashboard')
+    }
 
-  const clearProfile = useProfileStore((state) => state.clearProfile)
-  const onMenuItem = (action: 'profile' | 'logout') => {
-    if (action === 'profile') {
+    return false
+  }, [pathname, profileStore.role])
+  
+  const onMenuItem = (action: 'dashboard' | 'profile' | 'logout') => {
+    if (action === 'dashboard') {
+      redirect('/dashboard/article')
+    } 
+    else if (action === 'profile') {
       redirect('/profile/me')
     } else {
       // clear cookie
       Cookies.remove('token')
       Cookies.remove('role')
       // clear data on profile store
-      clearProfile()
+      profileStore.clearProfile()
       window.location.replace('/')
     }
   }
@@ -75,7 +88,22 @@ export default function ProfileDropdown() {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent align='end' className='min-w-52'>
+        <DropdownMenuLabel>Account</DropdownMenuLabel>
+        <DropdownMenuItem disabled>
+          <span className='capitalize'>{profileStore.username || '-'}</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          <span>Role access: {profileStore.role.toLocaleLowerCase() || '-'}</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {
+          showMenutItemDashboard && (
+            <DropdownMenuItem onClick={() => onMenuItem('dashboard')}>
+              <LayoutDashboard /> Dashboard
+            </DropdownMenuItem>
+          )
+        }
         <DropdownMenuItem onClick={() => onMenuItem('profile')}>
           <CircleUser /> Profile
         </DropdownMenuItem>
