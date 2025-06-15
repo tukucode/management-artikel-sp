@@ -65,6 +65,8 @@ export default function ImageInputPreview({ onFileChange }: ImageInputPreviewPro
             src={previewUrl}
             alt="Preview"
             fill
+            loader={({ src }) => src}
+            unoptimized
             className="object-contain"
           />
         </div>

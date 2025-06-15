@@ -62,7 +62,7 @@ export function ListData() {
   // get userId from store profile for filter data
   const userId = useProfileStore((state) => state.id)
   const fetchArticles = async () => {  
-    if (!userId.length) return
+    // if (!userId.length) return
     
     try {
       setLoading(true)
@@ -102,14 +102,40 @@ export function ListData() {
   // fetch API list aticles
   useEffect(() => {
     fetchArticles()
-  }, [debouncedSearch, userId, params.category, params.page, params.limit])
+  }, [debouncedSearch, params.category, params.page, params.limit])
   
   return (
     <div id="list__data__category" className='space-y-6'>
       <Card>
         <CardContent>
           <div className='grid grid-cols-12 gap-4'>
-            <div className="col-span-12 sm:col-span-3">
+            <div className="col-span-12 sm:col-span-6">
+              <Input 
+                placeholder='Search...' 
+                value={params.title}
+                onChange={(e) => {
+                  setParams((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                    page: 1,
+                  }))
+                }} />
+            </div>
+
+            <div className="col-span-12 sm:col-span-2">
+              <Select 
+              >
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder="Filter by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="personal">Personal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="col-span-12 sm:col-span-2">
               <Select 
                 value={params.category}
                 onValueChange={(value) => setParams((prev) => ({
@@ -119,10 +145,10 @@ export function ListData() {
                 }))}
               >
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder="Categories" />
+                  <SelectValue placeholder="Select by category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Category</SelectItem>
+                  {/* <SelectItem value="all">All Categories</SelectItem> */}
                   {
                     options && options.map((option, i) => {
                       if (option.id.length) {
@@ -136,18 +162,7 @@ export function ListData() {
               </Select>
             </div>
 
-            <div className="col-span-12 sm:col-span-7">
-              <Input 
-                placeholder='Search...' 
-                value={params.title}
-                onChange={(e) => {
-                  setParams((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                    page: 1,
-                  }))
-                }} />
-            </div>
+          
 
             <div className='col-span-12 sm:col-span-2'>
               <Button
@@ -199,7 +214,7 @@ export function ListData() {
                       <TableCell>
                         {
                           row.imageUrl ? (
-                            <Image src={row.imageUrl} alt={`image-${index}`} width="96" height="64" className='rounded-lg bg-contain bg-center' />
+                            <Image src={row.imageUrl} loader={({ src }) => src} unoptimized alt={`image-${index}`} width="96" height="64" className='rounded-lg object-contain bg-center' />
                           ) : (
                             <div className='w-24 h-16 bg-muted-foreground flex items-center justify-center rounded-lg'>
                               <FileImage />
