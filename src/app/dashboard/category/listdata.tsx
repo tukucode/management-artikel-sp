@@ -20,6 +20,7 @@ import { $axios } from '@/lib/axios'
 import { Button } from '@/components/ui/button'
 import { Database, Loader2Icon } from 'lucide-react'
 import { FormNewCategory } from './form-new-category'
+import { FormEditCategory } from './form-edit-category'
 
 interface QueryParams {
   search: string
@@ -135,8 +136,18 @@ export function ListData() {
                     <TableRow key={index}>
                       <TableCell className="font-medium">{row.name}</TableCell>
                       <TableCell className="text-right space-x-4">
-                        <Button>Edit</Button>
-                        <Button variant="destructive" onClick={() => onDeleteCategory(row.id)}>Delete</Button>
+                        <FormEditCategory 
+                          categoryId={row.id} 
+                          categoryName={row.name} 
+                          onLoadData={() => fetchCategories()} 
+                        />
+                        
+                        <Button 
+                          variant="destructive" 
+                          onClick={() => onDeleteCategory(row.id)}
+                        >
+                          Delete
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))

@@ -2,8 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useParams } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { $axios } from '@/lib/axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
