@@ -28,7 +28,6 @@ export default function ProfileDropdown() {
     if (profileStore.role.toLocaleLowerCase() == 'admin') {
       return !pathname.startsWith('/dashboard')
     }
-
     return false
   }, [pathname, profileStore.role])
   
@@ -69,8 +68,10 @@ export default function ProfileDropdown() {
   }
 
   useEffect(() => {
-    fetchData()
-  }, [profileStore.setProfile])
+    if (isLoading) {
+      fetchData()
+    }
+  }, [isLoading])
   
   return (
     <DropdownMenu>
