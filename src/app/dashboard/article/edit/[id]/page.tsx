@@ -184,19 +184,16 @@ export default function Edit() {
                 )}
               />
 
-              <div className='grid grid-cols-12 gap-4'>
+              <div className='space-x-4'>
                 <Button 
                   type='button'
-                  variant="secondary" 
-                  className='col-span-6 sm:col-span-3 md:col-span-2'
+                  variant="secondary"
                   onClick={() => router.back()}
                 >
                   Back
                 </Button>
 
-                <div className='col-span-6 sm:col-span-3 md:col-span-2'>
-                  <FormButtonSubmit isLoading={isLoding} label='Update' />
-                </div>
+                <FormButtonSubmit isLoading={isLoding} label='Create' />
               </div>
             </form>
           </Form>

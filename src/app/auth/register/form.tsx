@@ -89,7 +89,7 @@ export const FormRegister = () => {
           )}
         />
 
-        <FormButtonSubmit isLoading={isLoding} label='Register' />
+        <FormButtonSubmit isLoading={isLoding} label='Register' block />
         <p className='text-center'>
           Alredy have an account? {' '}
           <Link href="/auth/login" className='font-bold'>

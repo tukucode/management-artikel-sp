@@ -66,7 +66,7 @@ export const FormLogin = () => {
           )}
         />
 
-        <FormButtonSubmit isLoading={isLoding} label='Login' />
+        <FormButtonSubmit isLoading={isLoding} label='Login' block />
         <p className='text-center'>
           Don&apos;t have an account yet? {' '}
           <Link href="/auth/register" className='font-bold'>
