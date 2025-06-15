@@ -184,7 +184,7 @@ export default function Edit() {
                 )}
               />
 
-              <div className='space-x-4'>
+              <div className='space-x-4 flex items-center'>
                 <Button 
                   type='button'
                   variant="secondary"
