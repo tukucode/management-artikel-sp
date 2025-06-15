@@ -185,7 +185,7 @@ export default function ListArticles() {
                             </CardContent>
                             <CardFooter>
                               <Button asChild className='w-full'>
-                                <Link href={`/articles/${data.id}`}>
+                                <Link href={`/articles/${data.id}?categoryId=${data.categoryId}`}>
                                 Read More
                                 </Link>  
                               </Button>      
