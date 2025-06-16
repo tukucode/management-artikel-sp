@@ -38,7 +38,7 @@ interface QueryParamArticle {
 
 export function ListData() {
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<DetailArticle[]>([])
+  const [articles, setArticles] = useState<DetailArticle[]>([])
   const [options, setOptions] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
   const [params, setParams] =  useState<QueryParamArticle>({
@@ -75,7 +75,7 @@ export function ListData() {
           category: params.category == 'all' ? '' : params.category,
         },
       })
-      setData(response.data.data.data)
+      setArticles(response.data.data.data)
       setTotal(response.data.data.total)
     } catch (error) {
       console.error('ERROR', error)
@@ -208,7 +208,7 @@ export function ListData() {
                   </If>
 
                   <Else>
-                    <LoopView of={data}>
+                    <LoopView of={articles}>
                       <Empty>
                         <TableRow>
                           <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
