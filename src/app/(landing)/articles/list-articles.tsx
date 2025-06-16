@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { useDebounce } from '@/hooks/use-debounce'
 import { $axios } from '@/lib/axios'
+import { useEffect, useState } from 'react'
+import { useDebounce } from '@/hooks/use-debounce'
 import { DetailArticle, ResponseListArticle } from '@/types/responses/article_response_type'
 import { DetailCategory, ResponseListCategory } from '@/types/responses/category_response_type'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { useEffect, useState } from 'react'
-import { SkeletonCardArticle } from '@/components/skeleton/card-article'
 
+import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { SkeletonCardArticle } from '@/components/skeleton/card-article'
 import { DynamicPagination } from '@/components/dynamic-pagination'
 import { ArticleCard } from '@/components/article/card'
 import { ArticleNoDataFound } from '@/components/article/no-data-found'
 import { ConditionalView, If, Else, ElseIf } from '@/components/conditional-view'
+
 
 export default function ListArticles() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -72,7 +73,7 @@ export default function ListArticles() {
     
   return (
     <div id='list__articles'>
-      <Card className='mb-4 md:mb-6 sticky top-20'>
+      <Card className='mb-4 md:mb-6 sticky top-20 z-10'>
         <CardContent>
           <div className='grid grid-cols-12 gap-4'>
             <div className="col-span-8 sm:col-span-10">
@@ -124,7 +125,7 @@ export default function ListArticles() {
           <div className="grid grid-cols-12 gap-4 md:gap-8">
             {
               Array.from({ length: 11 }).map((_, index) => (
-                <div key={index} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 2xl:col-span-2'>
+                <div key={index} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
                   <SkeletonCardArticle />
                 </div>
               ))
@@ -141,7 +142,7 @@ export default function ListArticles() {
           <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
             {
               data.map((article, i) => (
-                <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 2xl:col-span-2'>
+                <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
                   <ArticleCard detail={article}/>
                 </div>
               ))
