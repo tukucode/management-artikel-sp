@@ -17,6 +17,11 @@ export interface DetailArticle {
   }
 }
 
+export type PreviewDataArticle = Pick<DetailArticle, 'title' | 'content' | 'createdAt'> & {
+  imageUrl: string | null
+  username: string
+}
+
 export type ResponseListArticle = ApiResponse<{
   data: DetailArticle[]
   page: number

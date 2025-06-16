@@ -5,12 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import Image from 'next/image'
-
 interface ImageInputPreviewProps {
   onFileChange?: (file: File | null) => void
+  onPreviewUrlChange?: (url: string | null) => void
 }
 
-export default function ImageInputPreview({ onFileChange }: ImageInputPreviewProps) {
+export default function ImageInputPreview({
+  onFileChange,
+  onPreviewUrlChange,
+}: ImageInputPreviewProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const isUserInteracted = useRef(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -21,6 +24,12 @@ export default function ImageInputPreview({ onFileChange }: ImageInputPreviewPro
       onFileChange?.(file)
     }
   }, [file, onFileChange])
+
+  useEffect(() => {
+    if (isUserInteracted.current) {
+      onPreviewUrlChange?.(previewUrl)
+    }
+  }, [previewUrl, onPreviewUrlChange])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     isUserInteracted.current = true
@@ -56,7 +65,7 @@ export default function ImageInputPreview({ onFileChange }: ImageInputPreviewPro
         accept="image/*"
         onChange={handleFileChange}
         ref={inputRef}
-        className='hidden'
+        className="hidden"
       />
 
       {previewUrl && (
@@ -81,17 +90,15 @@ export default function ImageInputPreview({ onFileChange }: ImageInputPreviewPro
           Choose File
         </Button>
 
-        { 
-          previewUrl && (
-            <Button
-              type="button"
-              onClick={handleReset}
-              variant="destructive"
-            >
-          Reset
-            </Button>
-          )
-        }
+        {previewUrl && (
+          <Button
+            type="button"
+            onClick={handleReset}
+            variant="destructive"
+          >
+            Reset
+          </Button>
+        )}
       </div>
     </div>
   )
