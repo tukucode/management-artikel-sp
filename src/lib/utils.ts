@@ -8,13 +8,22 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDateTime(isoString: string): string {
   const date = new Date(isoString)
 
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
+  const options: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }
 
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  // Format: Jun 14, 2025, 3:57 PM
+  const formatted = date.toLocaleString('en-US', options)
 
-  return `${day}/${month}/${year} ${hours}:${minutes}`
+  // Ganti koma dengan " · "
+  return formatted.replace(',', ' ·')
 }
 
+export function getInitialAvatar(username: string): string {
+  return username?.trim().charAt(0).toUpperCase() || 'A'
+}
