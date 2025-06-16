@@ -8,13 +8,14 @@ import { useParams, useSearchParams } from 'next/navigation'
 
 import { FileImage } from 'lucide-react'
 import { ArticleCard } from '@/components/article/card'
+import { Each, LoopView } from '@/components/loop-view'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ConditionalView, If, Else } from '@/components/conditional-view'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { formatDateTime, getInitialAvatar } from '@/lib/utils'
 import { ApiResponse } from '@/types/responses/base_response_type'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
-import { Each, LoopView } from '@/components/loop-view'
 
 export default function Page() {
   const params = useParams()
@@ -55,7 +56,17 @@ export default function Page() {
     <article id='detail__article'>
       <ConditionalView condition={[isLoading]}>
         <If>
-          <h1 className='text-6xl'>loading</h1>
+          <div className='space-y-4'>
+            <Skeleton className='w-1/2 h-10 text-center' />
+            <div className='flex items-center gap-x-4'>
+              <Skeleton className='w-10 h-10 rounded-full' />
+              <Skeleton className='w-40 h-6 text-center' />
+            </div>
+            <Skeleton className='w-full h-52 text-center' />
+            <Skeleton className='w-1/6 h-6 text-center' />
+            <Skeleton className='w-1/2 h-6 text-center' />
+            <Skeleton className='w-1/4 h-6 text-center' />
+          </div>
         </If>
 
         <Else>
@@ -79,7 +90,7 @@ export default function Page() {
             </p>
           </div>
 
-          <div className='w-full h-[300px] md:h-[600px] bg-muted-foreground flex items-center justify-center mt-6 mb-4'>
+          <div className='w-full h-[300px] md:h-[600px] bg-muted-foreground flex items-center justify-center rounded-lg mt-6 mb-4'>
             <ConditionalView condition={[!!detail.imageUrl]}>
               <If>
                 <Image 
@@ -89,7 +100,7 @@ export default function Page() {
                   alt={detail.title!}
                   width='150'
                   height='300'
-                  className='rounded-lg object-cover w-full h-full' 
+                  className='object-cover rounded-lg w-full h-full' 
                 /> 
               </If>
 
