@@ -9,7 +9,8 @@ export const articleSchema = z.object({
     .max(3000, { message: 'Content must be at most 3000 characters' }),
   categoryId: z.string().min(1, { message: 'Category is required'}),
   imageFile: z
-    .custom<File>((val) => val instanceof File && val.size > 0, {
+    .any()
+    .refine((val) => val instanceof File && val.size > 0, {
       message: 'Image is required',
     }),
 })

@@ -12,15 +12,15 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { articleSchema, ArticleFormData } from '@/lib/schemas/articleSchema'
 import { Button } from '@/components/ui/button'
+import { ConditionalView, Else, If } from '@/components/conditional-view'
+import { ArticlePreview } from '@/components/article/preview'
 import ImageInputPreview from '@/components/image-input-preview'
+import { TextEditor } from '@/components/text-edior'
 
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseRegister } from '@/types/responses/upload_response_type'
 import { ResponseCreateArticle, PreviewDataArticle } from '@/types/responses/article_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
-import { TextEditor } from '@/components/text-edior'
-import { ConditionalView, Else, If } from '@/components/conditional-view'
-import ArticlePreview from '@/components/article/preview'
 
 export default function Page() {
   const router = useRouter()
@@ -33,7 +33,7 @@ export default function Page() {
     content: '',
     imageUrl: '',
     username: '',
-    createdAt: new Date().toISOString(),
+    createdAt: '',
   })
 
   const form = useForm<ArticleFormData>({
@@ -42,7 +42,7 @@ export default function Page() {
       title: '',
       content: '',
       categoryId: '',
-      imageFile: undefined,
+      imageFile: null,
     },
   })
 
@@ -59,6 +59,22 @@ export default function Page() {
     }))
   }, [])
 
+  const handleCancelPreview = () => {
+    // reset 
+    form.setValue('imageFile', null)
+    form.resetField('imageFile')
+
+    setData({
+      title: '',
+      content: '',
+      imageUrl: '',
+      username: '',
+      createdAt: '',
+    })
+
+    setPreview(false)
+  }
+
   const onSubmit = async (formData: ArticleFormData) => {
     if (!isPreview) {
       setPreview(true)
@@ -67,6 +83,7 @@ export default function Page() {
         title: formData.title,
         content: formData.content,
         username: profileStore.username,
+        createdAt: new Date().toISOString(),
       }))
 
       return
@@ -76,7 +93,7 @@ export default function Page() {
 
     try {
       const fd = new FormData()
-      fd.append('image', formData.imageFile)
+      fd.append('image', formData.imageFile!)
 
       const uploadRes = await $axios.post<ResponseRegister>('/upload', fd)
       const imageUrl = uploadRes.data.data.imageUrl
@@ -136,7 +153,7 @@ export default function Page() {
                     <Button 
                       type='button'
                       variant="destructive"
-                      onClick={() => setPreview(false)}
+                      onClick={() => handleCancelPreview()}
                     >
                       Cancel
                     </Button>

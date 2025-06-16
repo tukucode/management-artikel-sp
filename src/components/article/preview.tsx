@@ -6,7 +6,7 @@ import { ConditionalView, If, Else } from '@/components/conditional-view'
 import { formatDateTime, getInitialAvatar } from '@/lib/utils'
 import { PreviewDataArticle } from '@/types/responses/article_response_type'
 
-export default function ArticlePreview({ 
+export function ArticlePreview({ 
   title,
   content,
   username,
