@@ -16,12 +16,13 @@ import { FormButtonSubmit } from '@/components/button-submit'
 import { ArticlePreview } from '@/components/article/preview'
 import { TextEditor } from '@/components/text-edior'
 import { ImageInputPreview } from '@/components/image-input-preview'
+import { ConditionalView, Else, If } from '@/components/conditional-view'
+import { Each, LoopView } from '@/components/loop-view'
 
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseRegister } from '@/types/responses/upload_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
 import { ResponseDetailArticle, ResponseEditArticle, PreviewDataArticle } from '@/types/responses/article_response_type'
-import { ConditionalView, Else, If } from '@/components/conditional-view'
 
 export default function Edit() {
   const router = useRouter()
@@ -213,15 +214,13 @@ export default function Edit() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {
-                              options && options.map((option, i) => {
-                                if (option.id.length) {
-                                  return (
-                                    <SelectItem key={i} value={option.id}>{option.name}</SelectItem>
-                                  )
-                                }
-                              })
-                            }
+                            <LoopView of={options}>
+                              <Each>
+                                {(option: DetailCategory, i: number) => (
+                                  <SelectItem key={i} value={option.id || '-'}>{option.name}</SelectItem>
+                                )}
+                              </Each>
+                            </LoopView>
                           </SelectContent>
                         </Select>
                         <FormMessage />

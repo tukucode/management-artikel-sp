@@ -104,15 +104,13 @@ export default function ListArticles() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {
-                    options && options.map((option, i) => {
-                      if (option.id.length) {
-                        return (
-                          <SelectItem key={i} value={option.id}>{option.name}</SelectItem>
-                        )
-                      }
-                    })
-                  }
+                  <LoopView of={options}>
+                    <Each>
+                      {(option: DetailCategory, i: number) => (
+                        <SelectItem key={i} value={option.id || '-'}>{option.name}</SelectItem>
+                      )}
+                    </Each>
+                  </LoopView>
                 </SelectContent>
               </Select>
             </div>
