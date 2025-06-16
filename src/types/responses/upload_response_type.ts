@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/types/responses/base_response_type'
+// import { ApiResponse } from '@/types/responses/base_response_type'
 
-export type ResponseRegister = ApiResponse<{
-  imageUrl: string
-}>
+export type ResponseRegister = {
+    imageUrl: string
+}

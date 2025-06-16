@@ -10,7 +10,6 @@ import { Each, LoopView } from '@/components/loop-view'
 import { ConditionalView, If, Else } from '@/components/conditional-view'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { ApiResponse } from '@/types/responses/base_response_type'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
 import { ArticlePreview } from '@/components/article/preview'
 
@@ -26,8 +25,8 @@ export default function Page() {
 
   const fetchDataArticle = async () => {
     try {
-      const resDetail =  await $axios.get<ApiResponse<DetailArticle>>(`/articles/${id}`)
-      setDetail(resDetail.data.data)
+      const resDetail =  await $axios.get<DetailArticle>(`/articles/${id}`)      
+      setDetail(resDetail.data)
 
       const resArticles = await $axios.get<ResponseListArticle>('/articles', {
         params: {
@@ -37,8 +36,9 @@ export default function Page() {
         },
       })
 
-      setArticles(resArticles.data.data.data)
-    } catch (error) {
+      setArticles(resArticles.data.data)
+    } 
+    catch (error) {
       console.error('ERROR', error)
     } finally {
       setLoading(false)

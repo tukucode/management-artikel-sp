@@ -57,7 +57,7 @@ export function ListData() {
   const fetchCategories = async () => {  
     try {
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
-      setOptions(response.data.data.data)
+      setOptions(response.data.data)
     } catch (error) {
       console.error('ERROR', error)
     }
@@ -75,8 +75,8 @@ export function ListData() {
           category: params.category == 'all' ? '' : params.category,
         },
       })
-      setArticles(response.data.data.data)
-      setTotal(response.data.data.total)
+      setArticles(response.data.data)
+      setTotal(response.data.total)
     } catch (error) {
       console.error('ERROR', error)
     } finally {
