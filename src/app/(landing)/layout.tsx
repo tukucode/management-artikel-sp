@@ -1,11 +1,12 @@
 'use client'
 
 import Cookies from 'js-cookie'
-import { useEffect, useMemo, useState } from 'react'
-import ProfileDropdown from '@/components/profile-dropdown'
-import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import ProfileDropdown from '@/components/profile-dropdown'
+import { APP_NAME } from '@/constants/variables_const'
 
 export default function RootLayout({
   children,
@@ -25,7 +26,7 @@ export default function RootLayout({
     <div id='layout__landing'>
       <header className='sticky top-0 z-10 flex justify-between items-center h-16 px-4 py-8 bg-sidebar shadow'>
         <Link href="/articles">
-          <h4 className='font-semibold text-lg'>Artiqo</h4>
+          <h4 className='font-semibold text-lg'>{ APP_NAME }</h4>
         </Link>
   
         {
