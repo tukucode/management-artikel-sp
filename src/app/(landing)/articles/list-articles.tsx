@@ -14,7 +14,8 @@ import { SkeletonCardArticle } from '@/components/skeleton/card-article'
 import { DynamicPagination } from '@/components/dynamic-pagination'
 import { ArticleCard } from '@/components/article/card'
 import { ArticleNoDataFound } from '@/components/article/no-data-found'
-import { ConditionalView, If, Else, ElseIf } from '@/components/conditional-view'
+import { ConditionalView, If, Else } from '@/components/conditional-view'
+import { LoopView, Each, Empty  } from '@/components/loop-view'
 
 
 export default function ListArticles() {
@@ -119,7 +120,7 @@ export default function ListArticles() {
         </CardContent>
       </Card>
 
-      <ConditionalView condition={[isLoading, data.length === 0]}>
+      <ConditionalView condition={[isLoading]}>
         {/* isLoading true */}
         <If>
           <div className="grid grid-cols-12 gap-4 md:gap-8">
@@ -132,29 +133,32 @@ export default function ListArticles() {
             }
           </div>
         </If>
-        
-        {/* condition data.length === 0 */}
-        <ElseIf>
-          <ArticleNoDataFound />
-        </ElseIf>
 
         <Else>
           <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
-            {
-              data.map((article, i) => (
-                <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
-                  <ArticleCard detail={article}/>
-                </div>
-              ))
-            }
-          </div>
+            <LoopView of={data}>
+              <Each>
+                {(article: DetailArticle, i: number) => (
+                  <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
+                    <ArticleCard detail={article}/>
+                  </div>
+                )}
+              </Each>
 
-          <DynamicPagination
-            totalItems={total}
-            itemsPerPage={params.limit}
-            currentPage={params.page}
-            onPageChange={handlePageChange}
-          />
+              <Empty>
+                <div className='col-span-12'>
+                  <ArticleNoDataFound />
+                </div>
+              </Empty>
+            </LoopView>
+
+            <DynamicPagination
+              totalItems={total}
+              itemsPerPage={params.limit}
+              currentPage={params.page}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </Else>
       </ConditionalView>
     </div>
