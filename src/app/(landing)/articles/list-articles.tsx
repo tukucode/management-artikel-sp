@@ -135,8 +135,14 @@ export default function ListArticles() {
         </If>
 
         <Else>
-          <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
-            <LoopView of={data}>
+          <LoopView of={data}>
+            <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
+              <Empty>
+                <div className='col-span-12'>
+                  <ArticleNoDataFound />
+                </div>
+              </Empty>
+
               <Each>
                 {(article: DetailArticle, i: number) => (
                   <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
@@ -144,21 +150,15 @@ export default function ListArticles() {
                   </div>
                 )}
               </Each>
+            </div>
+          </LoopView>
 
-              <Empty>
-                <div className='col-span-12'>
-                  <ArticleNoDataFound />
-                </div>
-              </Empty>
-            </LoopView>
-
-            <DynamicPagination
-              totalItems={total}
-              itemsPerPage={params.limit}
-              currentPage={params.page}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          <DynamicPagination
+            totalItems={total}
+            itemsPerPage={params.limit}
+            currentPage={params.page}
+            onPageChange={handlePageChange}
+          />
         </Else>
       </ConditionalView>
     </div>
