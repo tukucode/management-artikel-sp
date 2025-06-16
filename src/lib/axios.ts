@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import axios, {
   AxiosResponse,
   AxiosError,
@@ -5,23 +6,21 @@ import axios, {
 } from 'axios'
 import { BASE_API_URL } from '@/constants/variables_const'
 
-const $axios = axios.create({
-  baseURL: `${BASE_API_URL}/api`,
+const isServer = typeof window === 'undefined'
+
+export const $axios = axios.create({
+  baseURL: isServer ? `${BASE_API_URL}/api` : '/api',
   withCredentials: true,
 })
 
 $axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // if (typeof window !== 'undefined') {
-    //   const token = document.cookie
-    //     .split('; ')
-    //     .find((row) => row.startsWith('token='))
-    //     ?.split('=')[1]
+    const token = Cookies.get('token')
 
-    //   if (token) {
-    //     config.headers.Authorization = `Bearer ${token}`
-    //   }
-    // }
+    // set token to header Authorization
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
 
     return config
   },
@@ -31,7 +30,18 @@ $axios.interceptors.request.use(
 )
 
 $axios.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => response,
+  (response: AxiosResponse): AxiosResponse => {
+    // set cookie token and role from response
+    if (response.data.data.token) {
+      Cookies.set('token', response.data.data.token)
+    }
+
+    if (response.data.data.role) {
+      Cookies.set('role', response.data.data.role)
+    }
+
+    return response
+  },
   (error: AxiosError): Promise<AxiosError> => {
     // if (error.response) {
     //   const status = error.response.status
@@ -56,5 +66,3 @@ $axios.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-
-export default $axios

@@ -1,0 +1,14 @@
+.husky
+.vscode
+node_modules
+
+.env*
+
+.next/cache
+
+.git
+.gitignore
+
+.github
+
+Dockerfile

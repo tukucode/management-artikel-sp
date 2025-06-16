@@ -1,0 +1,36 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Image
+        run: |
+          docker build -t tukucode/artiqo:latest .
+          docker push tukucode/artiqo:latest
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: "22"
+          script: |
+            cd /opt/artiqo
+            docker compose pull web-artiqo
+            docker compose stop web-artiqo
+            docker compose up -d web-artiqo
+            docker system prune -af
+            curl --location --globoff 'https://api.telegram.org/bot7276570601:AAFWdJ4bzEO73HQ8Bh1WDICWrTXhxTz9mEU/sendMessage?chat_id=-1002312100539&text=[Web%20Artiqo]%20Deploy%20success%20-%20Branch%20Main&message_thread_id=27'
