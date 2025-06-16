@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:slug*',
-        destination: '/api/proxy/:slug*',
+        source: '/api-proxy/:path*',
+        destination: 'https://test-fe.mysellerpintar.com/:path*',
       },
     ]
   }, 

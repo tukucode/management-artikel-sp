@@ -8,9 +8,8 @@ export interface DetailCategory {
   updatedAt: string
 }
 
-export type ResponseListCategory = ApiResponse<{
-  data: DetailCategory[]
+export type ResponseListCategory = ApiResponse<DetailCategory[]> & {
   totalData: number
   currentPage: number
   totalPages: number
-}>
+}

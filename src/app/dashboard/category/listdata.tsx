@@ -51,8 +51,8 @@ export function ListData() {
       const response = await $axios.get<ResponseListCategory>('/categories', {
         params,
       })
-      setCategories(response.data.data.data)
-      setTotal(response.data.data.totalData)
+      setCategories(response.data.data)
+      setTotal(response.data.totalData)
     } catch (error) {
       console.error('ERROR', error)
       setCategories([])

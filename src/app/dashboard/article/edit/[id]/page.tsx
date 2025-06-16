@@ -22,7 +22,7 @@ import { Each, LoopView } from '@/components/loop-view'
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseRegister } from '@/types/responses/upload_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
-import { ResponseDetailArticle, ResponseEditArticle, PreviewDataArticle } from '@/types/responses/article_response_type'
+import { ResponseDetailArticle, PreviewDataArticle } from '@/types/responses/article_response_type'
 
 export default function Edit() {
   const router = useRouter()
@@ -99,9 +99,9 @@ export default function Edit() {
       fd.append('image', formData.imageFile!)
   
       const uploadRes = await $axios.post<ResponseRegister>('/upload', fd)
-      const imageUrl = uploadRes.data.data.imageUrl
+      const imageUrl = uploadRes.data.imageUrl
   
-      await $axios.put<ResponseEditArticle>(`/articles/${id}`, {
+      await $axios.put(`/articles/${id}`, {
         title: formData.title,
         content: formData.content,
         categoryId: formData.categoryId,
@@ -119,7 +119,7 @@ export default function Edit() {
   const fetchCategories = async () => {  
     try {
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
-      setOptions(response.data.data.data)
+      setOptions(response.data.data)
     } catch (error) {
       console.error('ERROR', error)
     }
@@ -129,8 +129,7 @@ export default function Edit() {
     try {
       setLoading(true)
       const response = await $axios.get<ResponseDetailArticle>(`/articles/${id}`)
-
-      const { title, categoryId, content } = response.data.data
+      const { title, categoryId, content } = response.data
       form.setValue('title', title)
       form.setValue('categoryId', categoryId, { shouldTouch: true })
       form.setValue('content', content)

@@ -20,7 +20,7 @@ import {
 
 import { getInitialAvatar } from '@/lib/utils'
 import { useProfileStore } from '@/store/profile-store'
-import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
+import { DetailProfile } from '@/types/responses/profile_response_type'
 
 export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -53,11 +53,11 @@ export default function ProfileDropdown() {
 
   const fetchData = async () => {  
     try {
-      const response = await $axios.get<ResponseProfile>('/auth/profile')
-      setData(response.data.data)
-
+      const response = await $axios.get<DetailProfile>('/auth/profile')
+      setData(response.data)
+      
       // set data profile on store Profile
-      const { id, username, role } = response.data.data
+      const { id, username, role } = response.data
       profileStore.setProfile({ id, username, role })
     } catch (error) {
       console.error('ERROR', error)

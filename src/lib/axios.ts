@@ -9,7 +9,7 @@ import { BASE_API_URL } from '@/constants/variables_const'
 const isServer = typeof window === 'undefined'
 
 export const $axios = axios.create({
-  baseURL: isServer ? `${BASE_API_URL}/api` : '/api',
+  baseURL: isServer ? '/api-proxy/api' : `${BASE_API_URL}/api-proxy/api`,
   withCredentials: true,
 })
 
@@ -30,14 +30,14 @@ $axios.interceptors.request.use(
 )
 
 $axios.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => {
+  (response: AxiosResponse): AxiosResponse => {        
     // set cookie token and role from response
-    if (response.data.data.token) {
-      Cookies.set('token', response.data.data.token)
+    if (response.data.token) {
+      Cookies.set('token', response.data.token)
     }
 
-    if (response.data.data.role) {
-      Cookies.set('role', response.data.data.role)
+    if (response.data.role) {
+      Cookies.set('role', response.data.role)
     }
 
     return response

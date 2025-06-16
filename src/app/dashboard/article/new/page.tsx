@@ -19,7 +19,7 @@ import { TextEditor } from '@/components/text-edior'
 
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseRegister } from '@/types/responses/upload_response_type'
-import { ResponseCreateArticle, PreviewDataArticle } from '@/types/responses/article_response_type'
+import { PreviewDataArticle } from '@/types/responses/article_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
 
 export default function Page() {
@@ -96,9 +96,9 @@ export default function Page() {
       fd.append('image', formData.imageFile!)
 
       const uploadRes = await $axios.post<ResponseRegister>('/upload', fd)
-      const imageUrl = uploadRes.data.data.imageUrl
-
-      await $axios.post<ResponseCreateArticle>('/articles', {
+      const imageUrl = uploadRes.data.imageUrl
+      
+      await $axios.post('/articles', {
         title: formData.title,
         content: formData.content,
         categoryId: formData.categoryId,
@@ -117,7 +117,7 @@ export default function Page() {
     try {
       setLoading(true)
       const response = await $axios.get<ResponseListCategory>('/categories?limit=100')
-      setOptions(response.data.data.data)
+      setOptions(response.data.data)
     } catch (error) {
       console.error('ERROR', error)
     } finally {

@@ -13,7 +13,6 @@ import { $axios } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Role  } from '@/types/role_type'
 import { registerSchema, RegisterFormData } from '@/lib/schemas/authSchema'
-import { ResponseRegister } from '@/types/responses/register_response_type'
 
 export const FormRegister = () => {
   const [isLoding, setLoading] = useState(false)
@@ -29,7 +28,7 @@ export const FormRegister = () => {
   const onSubmit = async (formData: RegisterFormData) => {
     try {
       setLoading(true)
-      await $axios.post<ResponseRegister>('/auth/register', formData)
+      await $axios.post('/auth/register', formData)
       redirect('/auth/login')
     } finally {
       setLoading(false)

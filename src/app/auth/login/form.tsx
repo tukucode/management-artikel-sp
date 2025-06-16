@@ -11,7 +11,6 @@ import { FormButtonSubmit } from '@/components/button-submit'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 import { loginSchema, LoginFormData } from '@/lib/schemas/authSchema'
-import { ResponseLogin } from '@/types/responses/login_response_type'
 
 export const FormLogin = () => {
   const router = useRouter()
@@ -26,9 +25,9 @@ export const FormLogin = () => {
   })
 
   const onSubmit = async (formData: LoginFormData) => {
+    setLoading(true)
     try {
-      setLoading(true)
-      await $axios.post<ResponseLogin>('/auth/login', formData)
+      await $axios.post('/auth/login', formData)
       router.push('/articles')
     } finally {
       setLoading(false)
