@@ -2,6 +2,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 import {
   Table,
   TableBody,
@@ -11,7 +13,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DynamicPagination } from '@/components/dynamic-pagination'
-
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/use-debounce'
@@ -54,7 +55,9 @@ export function ListData() {
       setCategories(response.data.data)
       setTotal(response.data.totalData)
     } catch (error) {
-      console.error('ERROR', error)
+      const err = error as AxiosError
+      toast.error(`${err?.response?.data || 'Somenthing went wrong'}`)
+
       setCategories([])
       setTotal(0)
     } finally {
