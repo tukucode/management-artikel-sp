@@ -14,6 +14,7 @@ import { ConditionalView, If, Else } from '@/components/conditional-view'
 import { formatDateTime, getInitialAvatar } from '@/lib/utils'
 import { ApiResponse } from '@/types/responses/base_response_type'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
+import { Each, LoopView } from '@/components/loop-view'
 
 export default function Page() {
   const params = useParams()
@@ -104,24 +105,26 @@ export default function Page() {
         </Else>
       </ConditionalView>
 
-      <ConditionalView condition={[!!datas.length]}>
-        <If>
-          <div className="grid grid-cols-12 gap-4 my-8">
-            <div className='col-span-12'>
-              <h3 className='text-base md:text-lg font-bold'>
-                        It&apos;s being talked about a lot, so it&apos;s worth reading after this article.
-              </h3>
+      <LoopView of={datas}>
+        <ConditionalView condition={[datas.length != 0]}>
+          <If>
+            <div className="grid grid-cols-12 gap-4 my-8">
+              <div className='col-span-12'>
+                <h3 className='text-base md:text-lg font-bold'>
+              It&apos;s being talked about a lot, so it&apos;s worth reading after this article.
+                </h3>
+              </div>
+              <Each>
+                {(article: DetailArticle, i: number) => (
+                  <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3'>
+                    <ArticleCard detail={article}/>
+                  </div>
+                )}
+              </Each>
             </div>
-            {
-              datas.map((data, i) => (
-                <div key={i} className='col-span-12 sm:col-span-6 md:col-span-4'>
-                  <ArticleCard detail={data} />
-                </div>
-              ))
-            }
-          </div>
-        </If>
-      </ConditionalView>
+          </If>
+        </ConditionalView>
+      </LoopView>
     </article>
   )
 }
