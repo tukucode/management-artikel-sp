@@ -10,7 +10,7 @@ interface ImageInputPreviewProps {
   onPreviewUrlChange?: (url: string | null) => void
 }
 
-export default function ImageInputPreview({
+export function ImageInputPreview({
   onFileChange,
   onPreviewUrlChange,
 }: ImageInputPreviewProps) {

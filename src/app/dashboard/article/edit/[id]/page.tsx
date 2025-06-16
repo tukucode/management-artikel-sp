@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 import { FormButtonSubmit } from '@/components/button-submit'
 import { ArticlePreview } from '@/components/article/preview'
 import { TextEditor } from '@/components/text-edior'
-import ImageInputPreview from '@/components/image-input-preview'
+import { ImageInputPreview } from '@/components/image-input-preview'
 
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseRegister } from '@/types/responses/upload_response_type'

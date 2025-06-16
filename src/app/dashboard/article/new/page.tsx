@@ -14,7 +14,7 @@ import { articleSchema, ArticleFormData } from '@/lib/schemas/articleSchema'
 import { Button } from '@/components/ui/button'
 import { ConditionalView, Else, If } from '@/components/conditional-view'
 import { ArticlePreview } from '@/components/article/preview'
-import ImageInputPreview from '@/components/image-input-preview'
+import { ImageInputPreview } from '@/components/image-input-preview'
 import { TextEditor } from '@/components/text-edior'
 
 import { useProfileStore } from '@/store/profile-store'
