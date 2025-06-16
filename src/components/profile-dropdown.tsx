@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
+import { getInitialAvatar } from '@/lib/utils'
 
 export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -45,10 +46,6 @@ export default function ProfileDropdown() {
       profileStore.clearProfile()
       window.location.replace('/auth/login')
     }
-  }
-
-  function getInitial(username: string): string {
-    return username?.trim().charAt(0).toUpperCase() || 'A'
   }
 
   const fetchData = async () => {  
@@ -80,7 +77,7 @@ export default function ProfileDropdown() {
                 <Loader2Icon className="animate-spin text-muted-foreground" />
               )
                 : 
-                getInitial(data.username!)
+                getInitialAvatar(data.username!)
             }
           </AvatarFallback>
         </Avatar>
