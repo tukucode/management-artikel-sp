@@ -1,20 +1,21 @@
-import React from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card'
-import { FileImage } from 'lucide-react'
-
+import { useRouter } from 'next/navigation'
 import { DetailArticle } from '@/types/responses/article_response_type'
+import { formatDateTime, getInitialAvatar } from '@/lib/utils'
 
-type PropsArticleCard = {
+import { FileImage } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Avatar, AvatarFallback } from '../ui/avatar'
+
+type ArticleCardProps = {
   detail: DetailArticle
 }
 
-export function ArticleCard({ detail }: PropsArticleCard) {
+export function ArticleCard({ detail }: ArticleCardProps) {
+  const router = useRouter()
   return (
-    <Card className='h-full'>
+    <Card className='h-full hover:cursor-pointer' onClick={() => router.push(`/articles/${detail.id}?categoryId=${detail.categoryId}`)}>
       <CardHeader>
         <div className='w-full h-44 bg-muted-foreground flex items-center justify-center rounded-lg'>
           {
@@ -33,21 +34,31 @@ export function ArticleCard({ detail }: PropsArticleCard) {
           }
         </div>
       </CardHeader>
-      <CardContent className='space-y-2'>
-        <Badge variant="secondary" className='truncate w-full'>
-          {detail.category.name || '-'}
+
+      <CardContent className='space-y-4'>
+        <Badge variant="secondary" className="whitespace-normal leading-normal break-words line-clamp-1">
+          {detail.category.name}
         </Badge>
 
-        <h3 className='font-semibold text-lg capitalize line-clamp-2'>
-          {detail.title || '-'}
-        </h3>             
+        <h2 className="text-lg font-semibold line-clamp-2">{detail.title}</h2>
+ 
+        <div dangerouslySetInnerHTML={{ __html: detail.content }} className='capitalize text-sm text-muted-foreground line-clamp-3' />
       </CardContent>
-      <CardFooter>
-        <Button asChild className='w-full'>
-          <Link href={`/articles/${detail.id}?categoryId=${detail.categoryId}`}>
-            Read More
-          </Link>  
-        </Button>      
+
+      <CardFooter className='flex flex-col justify-end items-start h-full space-y-2'>
+        <div className='flex items-center gap-x-2'>
+          <Avatar>
+            <AvatarFallback>
+              {getInitialAvatar(detail.user.username)}
+            </AvatarFallback>
+          </Avatar>
+          
+          <span className='text-sm font-medium'>{detail.user.username}</span>
+        </div>
+
+        <div className='text-xs text-muted-foreground'>
+          {formatDateTime(detail.createdAt)}
+        </div>
       </CardFooter>
     </Card>
   )
