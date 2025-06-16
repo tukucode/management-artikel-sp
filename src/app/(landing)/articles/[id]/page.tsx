@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { ApiResponse } from '@/types/responses/base_response_type'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
-import ArticlePreview from '@/components/article/preview'
+import { ArticlePreview } from '@/components/article/preview'
 
 export default function Page() {
   const params = useParams()
