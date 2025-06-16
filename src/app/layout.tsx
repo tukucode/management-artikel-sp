@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Nunito_Sans } from 'next/font/google'
+import { Toaster } from '@/components/ui/sonner'
 import { APP_NAME, APP_DESCRIPTION, PUBLIC_SERVER_URL} from '@/constants/variables_const'
 import './globals.css'
 
@@ -32,9 +33,13 @@ export default function RootLayout({
       <body
         className={`${nunitoSans.variable} antialiased`}
       >
+        <Toaster 
+          position='top-right'
+          expand={true}
+        />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { FormButtonSubmit } from '@/components/button-submit'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 import { useState } from 'react'
-import { redirect } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { $axios } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,6 +16,7 @@ import { Role  } from '@/types/role_type'
 import { registerSchema, RegisterFormData } from '@/lib/schemas/authSchema'
 
 export const FormRegister = () => {
+  const router = useRouter()
   const [isLoding, setLoading] = useState(false)
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -29,7 +31,9 @@ export const FormRegister = () => {
     try {
       setLoading(true)
       await $axios.post('/auth/register', formData)
-      redirect('/auth/login')
+      router.push('/auth/login')
+    } catch {
+      toast.error('The entered credentials are already in use. Please try different ones.')
     } finally {
       setLoading(false)
     }

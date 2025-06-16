@@ -1,7 +1,7 @@
 'use client'
-
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { $axios } from '@/lib/axios'
@@ -29,6 +29,8 @@ export const FormLogin = () => {
     try {
       await $axios.post('/auth/login', formData)
       router.push('/articles')
+    } catch {
+      toast.error('Incorrect username or password. Please try again.')
     } finally {
       setLoading(false)
     }
