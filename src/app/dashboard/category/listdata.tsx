@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/button'
 import { Database, Loader2Icon } from 'lucide-react'
 import { FormNewCategory } from './form-new-category'
 import { FormEditCategory } from './form-edit-category'
+import { ConditionalView, Else, If } from '@/components/conditional-view'
+import { Each, Empty, LoopView } from '@/components/loop-view'
 
 interface QueryParams {
   search: string
@@ -30,7 +32,7 @@ interface QueryParams {
 
 export function ListData() {
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<DetailCategory[]>([])
+  const [categories, setCategories] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
   const [params, setParams] =  useState<QueryParams>({
     search: '',
@@ -49,11 +51,11 @@ export function ListData() {
       const response = await $axios.get<ResponseListCategory>('/categories', {
         params,
       })
-      setData(response.data.data.data)
+      setCategories(response.data.data.data)
       setTotal(response.data.data.totalData)
     } catch (error) {
       console.error('ERROR', error)
-      setData([])
+      setCategories([])
       setTotal(0)
     } finally {
       setLoading(false)
@@ -112,8 +114,8 @@ export function ListData() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {
-                isLoading ? (
+              <ConditionalView condition={[isLoading]}>
+                <If>
                   <TableRow>
                     <TableCell colSpan={2} className="text-center text-muted-foreground py-10">
                       <div className='flex justify-center'>
@@ -122,36 +124,46 @@ export function ListData() {
                       <span className="block text-sm mt-2">Loading...</span>
                     </TableCell>
                   </TableRow>
-                ) : data.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center py-10 text-muted-foreground">
-                      <div className='flex justify-center'>
-                        <Database className="h-10 w-10" />
-                      </div>
-                      <span className="block text-sm mt-2"> No data found.</span>
-                    </TableCell>
-                  </TableRow>
-                ) :
-                  data.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{row.name}</TableCell>
-                      <TableCell className="text-right space-x-4">
-                        <FormEditCategory 
-                          categoryId={row.id} 
-                          categoryName={row.name} 
-                          onLoadData={() => fetchCategories()} 
-                        />
+                </If>
+
+                <Else>
+                  <LoopView of={categories}>
+                    <Empty>
+                      <TableRow>
+                        <TableCell colSpan={2} className="text-center py-10 text-muted-foreground">
+                          <div className='flex justify-center'>
+                            <Database className="h-10 w-10" />
+                          </div>
+                          <span className="block text-sm mt-2"> No data found.</span>
+                        </TableCell>
+                      </TableRow>
+                    </Empty>
+
+                    <Each>
+                      {(category: DetailCategory, i: number) => (
+                        <TableRow key={i}>
+                          <TableCell className="font-medium">{category.name}</TableCell>
+                          <TableCell className="text-right space-x-4">
+                            <FormEditCategory 
+                              categoryId={category.id} 
+                              categoryName={category.name} 
+                              onLoadData={() => fetchCategories()} 
+                            />
                         
-                        <Button 
-                          variant="destructive" 
-                          onClick={() => onDeleteCategory(row.id)}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-              }
+                            <Button 
+                              variant="destructive" 
+                              onClick={() => onDeleteCategory(category.id)}
+                            >
+                              Delete
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Each>
+                  </LoopView>
+                </Else>
+              </ConditionalView>
+              
             </TableBody>
           </Table>
         

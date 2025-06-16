@@ -3,6 +3,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { $axios } from '@/lib/axios'
 import { useEffect, useState } from 'react'
 import {
   Table,
@@ -16,14 +17,17 @@ import { DynamicPagination } from '@/components/dynamic-pagination'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/use-debounce'
-import { $axios } from '@/lib/axios'
 import { Button } from '@/components/ui/button'
-import { Database, FileImage, Loader2Icon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Database, FileImage, Loader2Icon } from 'lucide-react'
+
+import { useProfileStore } from '@/store/profile-store'
 import { ResponseListArticle, DetailArticle } from '@/types/responses/article_response_type'
 import { ResponseListCategory, DetailCategory } from '@/types/responses/category_response_type'
-import { useProfileStore } from '@/store/profile-store'
-
+import { Badge } from '@/components/ui/badge'
+import { ConditionalView, Else, If } from '@/components/conditional-view'
+import { Each, Empty, LoopView } from '@/components/loop-view'
+ 
 interface QueryParamArticle {
   title: string
   userId: string
@@ -180,64 +184,79 @@ export function ListData() {
 
       <Card>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Source</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Content</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="w-1/6 text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {
-                isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
-                      <div className='flex justify-center'>
-                        <Loader2Icon className="animate-spin h-10 w-10" />
-                      </div>
-                      <span className="block text-sm mt-2">Loading...</span>
-                    </TableCell>
-                  </TableRow>
-                ) : data.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
-                      <div className='flex justify-center'>
-                        <Database className="h-10 w-10" />
-                      </div>
-                      <span className="block text-sm mt-2"> No data found.</span>
-                    </TableCell>
-                  </TableRow>
-                ) :
-                  data.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        {
-                          row.imageUrl ? (
-                            <Image src={row.imageUrl} loader={({ src }) => src} unoptimized alt={`image-${index}`} width="96" height="64" className='rounded-lg object-contain bg-center' />
-                          ) : (
-                            <div className='w-24 h-16 bg-muted-foreground flex items-center justify-center rounded-lg'>
-                              <FileImage />
-                            </div>
-                          )
-                        }
-                      </TableCell>
-                      <TableCell className="font-medium">{row.title || '-'}</TableCell>
-                      <TableCell className="font-medium">{ row.content.length > 50 ? `${row.content.slice(0, 50)}...` : row.content }</TableCell>
-                      <TableCell className="font-medium">{row.category.name || '-'}</TableCell>
-                      <TableCell className="text-right space-x-4">
-                        <Button>
-                          <Link href={`/dashboard/article/edit/${row.id}`}>Edit</Link>
-                        </Button>
-                        <Button variant="destructive" onClick={() => onDeleteArticle(row.id)}>Delete</Button>
+          <div className="max-w-full overflow-x-auto">
+            <Table className="table-fixed w-full text-sm">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className='w-1/4 md:w-1/4'>Source</TableHead>
+                  <TableHead className='w-1/2'>Title</TableHead>
+                  <TableHead className='w-1/2'>Content</TableHead>
+                  <TableHead className="w-1/2 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <ConditionalView condition={[isLoading]}>
+                  <If>
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center text-muted-foreground py-10">
+                        <div className='flex justify-center'>
+                          <Loader2Icon className="animate-spin h-10 w-10" />
+                        </div>
+                        <span className="block text-sm mt-2">Loading...</span>
                       </TableCell>
                     </TableRow>
-                  ))
-              }
-            </TableBody>
-          </Table>
+                  </If>
+
+                  <Else>
+                    <LoopView of={data}>
+                      <Empty>
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
+                            <div className='flex justify-center'>
+                              <Database className="h-10 w-10" />
+                            </div>
+                            <span className="block text-sm mt-2"> No data found.</span>
+                          </TableCell>
+                        </TableRow>
+                      </Empty>
+
+                      <Each>
+                        {(article: DetailArticle, i: number) => (
+                          <TableRow key={i}>
+                            <TableCell className='w-1/2 space-y-2'>
+                              <ConditionalView condition={[!!article.imageUrl]}>
+                                <If>
+                                  <Image src={article.imageUrl} loader={({ src }) => src} unoptimized alt={`image-${i}`} width="96" height="64" className='rounded-lg object-contain bg-center' />
+                                </If>
+
+                                <Else>
+                                  <div className='w-24 h-16 bg-muted-foreground flex items-center justify-center rounded-lg'>
+                                    <FileImage />
+                                  </div>
+                                </Else>
+                              </ConditionalView>
+  
+                              <Badge variant='secondary' className='whitespace-normal leading-normal break-words line-clamp-1'>
+                                { article.category.name }
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="font-medium truncate">{ article.title }</TableCell>
+                            <TableCell className="font-medium truncate">{ article.content }</TableCell>
+                            <TableCell className="text-right space-x-4">
+                              <Button>
+                                <Link href={`/dashboard/article/edit/${article.id}`}>Edit</Link>
+                              </Button>
+                              <Button variant="destructive" onClick={() => onDeleteArticle(article.id)}>Delete</Button>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Each>
+                    </LoopView>
+                  </Else>
+                </ConditionalView>
+              </TableBody>
+            </Table>
+          </div>
         
           <DynamicPagination
             totalItems={total}

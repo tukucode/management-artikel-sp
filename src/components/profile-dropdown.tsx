@@ -3,8 +3,12 @@
 
 import Cookies from 'js-cookie'
 import { $axios } from '@/lib/axios'
-import { redirect, usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+import { redirect, usePathname } from 'next/navigation'
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ConditionalView, If, Else } from '@/components/conditional-view'
+import { Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +17,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Loader2Icon, LogOut, LayoutDashboard } from 'lucide-react'
+
+import { getInitialAvatar } from '@/lib/utils'
 import { useProfileStore } from '@/store/profile-store'
 import { ResponseProfile, DetailProfile } from '@/types/responses/profile_response_type'
-import { getInitialAvatar } from '@/lib/utils'
 
 export default function ProfileDropdown() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -72,13 +75,14 @@ export default function ProfileDropdown() {
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarFallback>
-            {
-              isLoading ? (
+            <ConditionalView condition={[isLoading]}>
+              <If>
                 <Loader2Icon className="animate-spin text-muted-foreground" />
-              )
-                : 
-                getInitialAvatar(data.username!)
-            }
+              </If>
+              <Else>
+                { getInitialAvatar(data.username!) }
+              </Else>
+            </ConditionalView>
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -91,17 +95,17 @@ export default function ProfileDropdown() {
           <span>Role access: {profileStore.role.toLocaleLowerCase() || '-'}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {
-          showMenutItemDashboard && (
-            <>
-              <DropdownMenuLabel>Management</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onMenuItem('dashboard')}>
-                <LayoutDashboard /> Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
-          )
-        }
+        
+        <ConditionalView condition={[showMenutItemDashboard]}>
+          <If>
+            <DropdownMenuLabel>Management</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onMenuItem('dashboard')}>
+              <LayoutDashboard /> Dashboard
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </If>
+        </ConditionalView>
+
         <DropdownMenuItem onClick={() => onMenuItem('logout')}>
           <LogOut />  Logout
         </DropdownMenuItem>
