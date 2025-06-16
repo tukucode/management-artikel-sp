@@ -20,7 +20,7 @@ import { LoopView, Each, Empty  } from '@/components/loop-view'
 
 export default function ListArticles() {
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<DetailArticle[]>([])
+  const [articles, setArticles] = useState<DetailArticle[]>([])
   const [options, setOptions] = useState<DetailCategory[]>([])
   const [total, setTotal] = useState<number>(0)
   const [params, setParams] =  useState({
@@ -53,7 +53,7 @@ export default function ListArticles() {
           category: params.category == 'all' ? '' : params.category,
         },
       })
-      setData(response.data.data.data)
+      setArticles(response.data.data.data)
       setTotal(response.data.data.total)
     } catch (error) {
       console.error('ERROR', error)
@@ -135,7 +135,7 @@ export default function ListArticles() {
         </If>
 
         <Else>
-          <LoopView of={data}>
+          <LoopView of={articles}>
             <div className="grid grid-cols-12 gap-4 md:gap-8 mb-8">
               <Empty>
                 <div className='col-span-12'>
