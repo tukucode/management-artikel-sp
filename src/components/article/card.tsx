@@ -41,8 +41,10 @@ export function ArticleCard({ detail }: ArticleCardProps) {
         </Badge>
 
         <h2 className="text-lg font-semibold line-clamp-2">{detail.title}</h2>
- 
-        <div dangerouslySetInnerHTML={{ __html: detail.content }} className='capitalize text-sm text-muted-foreground line-clamp-3' />
+          
+        <article className="prose prose-lg max-w-none text-muted-foreground line-clamp-3">
+          <div dangerouslySetInnerHTML={{ __html: detail.content! }} />
+        </article>
       </CardContent>
 
       <CardFooter className='flex flex-col justify-end items-start h-full space-y-2'>
